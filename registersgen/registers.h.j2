@@ -1,0 +1,30 @@
+/*
+ * "THE BEER-WARE LICENSE" (Revision 69):
+ * Squadra Corse firmware team wrote this file. As long as you retain this notice
+ * you can do whatever you want with this stuff. If we meet some day, and you 
+ * think this stuff is worth it, you can buy us a beer in return.
+ * 
+ * Authors
+ * - Federico Carbone [federico.carbone.sc@gmail.com]
+ */
+
+#include <inttypes.h>
+
+typedef enum {
+    {% for reg in registers %}{% set template = "%-"+max_reg_strlen|string+"s = %s" %}{{ template|format(reg.name, reg.address) }}{% if not loop.last %},
+    {% endif %}{% endfor %}
+} L9963E_RegistersAddrTypeDef;
+
+{% for reg in registers %}
+typedef struct {
+    uint32_t    :14,
+                {% for field in reg.fields %}{% set template = "%-"+reg.max_field_strlen|string+"s :%s" %}{{ template|format(field.name, field.width) }}{% if not loop.last %},
+                {% else %};{% endif %}{% endfor %}
+} L9963E_{{ reg.name }}TypeDef;
+{% endfor %}
+
+typedef union {
+    uint32_t generic;
+    {% for reg in registers %}L9963E_{{ reg.name }}TypeDef {{ "%30s"|format(reg.name) }};
+    {% endfor %}
+} L9963E_RegisterUnionTypeDef;

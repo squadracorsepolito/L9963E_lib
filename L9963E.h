@@ -1,0 +1,74 @@
+/*
+ * "THE BEER-WARE LICENSE" (Revision 69):
+ * Squadra Corse firmware team wrote this file. As long as you retain this notice
+ * you can do whatever you want with this stuff. If we meet some day, and you 
+ * think this stuff is worth it, you can buy us a beer in return.
+ * 
+ * Authors
+ * - Federico Carbone [federico.carbone.sc@gmail.com]
+ */
+
+#ifndef L9963E_H
+#define L9963E_H
+
+#include "main.h"
+#include "registers.h"
+#include <inttypes.h>
+
+#define L9963E_CS_HIGH(HANDLE)       HAL_GPIO_WritePin((HANDLE)->cs_port, (HANDLE)->cs_pin, GPIO_PIN_SET)
+#define L9963E_CS_LOW(HANDLE)        HAL_GPIO_WritePin((HANDLE)->cs_port, (HANDLE)->cs_pin, GPIO_PIN_RESET)
+
+#define L9963E_TXEN_HIGH(HANDLE)       HAL_GPIO_WritePin((HANDLE)->txen_port, (HANDLE)->txen_pin, GPIO_PIN_SET)
+#define L9963E_TXEN_LOW(HANDLE)        HAL_GPIO_WritePin((HANDLE)->txen_port, (HANDLE)->txen_pin, GPIO_PIN_RESET)
+
+#define L9963E_BNE_READ(HANDLE)         HAL_GPIO_ReadPin((HANDLE)->bne_port, (HANDLE)->bne_pin)
+
+#define L9963E_CMD_MASK         0xFFFFFFFFFF
+
+struct L9963E_DataParamStruct {
+        uint64_t mask;
+        uint8_t offset;
+};
+typedef struct L9963E_DataParamStruct L9963E_DataParamTypeDef;
+
+extern L9963E_DataParamTypeDef L9963E_PA;
+extern L9963E_DataParamTypeDef L9963E_RW;
+extern L9963E_DataParamTypeDef L9963E_BURST;
+extern L9963E_DataParamTypeDef L9963E_DEVID;
+extern L9963E_DataParamTypeDef L9963E_ADDR;
+extern L9963E_DataParamTypeDef L9963E_GSW;
+extern L9963E_DataParamTypeDef L9963E_DATA;
+extern L9963E_DataParamTypeDef L9963E_CRC;
+
+struct L9963E_CmdStruct {
+        uint64_t        :24 ,
+                        pa :1,
+                        rw_burst :1,
+                        devid :5,
+                        addr :7,
+                        gsw :2,
+                        data :18,
+                        crc :6;
+};
+typedef struct L9963E_CmdStruct L9963E_CmdTypeDef;
+
+struct L9963E_HandleStruct {
+        SPI_HandleTypeDef *hspi;
+        GPIO_TypeDef *cs_port;
+        uint8_t cs_pin;
+
+        GPIO_TypeDef *txen_port;
+        uint8_t txen_pin;
+
+        GPIO_TypeDef *bne_port;
+        uint8_t bne_pin;
+};
+typedef struct L9963E_HandleStruct L9963E_HandleTypeDef;
+
+HAL_StatusTypeDef L9963E_init(L9963E_HandleTypeDef *handle, SPI_HandleTypeDef *hspi, GPIO_TypeDef *cs_port, uint8_t cs_pin, GPIO_TypeDef *txen_port, uint8_t txen_pin, GPIO_TypeDef *bne_port, uint8_t bne_pin);
+HAL_StatusTypeDef L9963E_wakeup(L9963E_HandleTypeDef *handle);
+HAL_StatusTypeDef L9963E_reg_read(L9963E_HandleTypeDef *handle, uint8_t device, L9963E_RegistersAddrTypeDef address, L9963E_RegisterUnionTypeDef *data);
+HAL_StatusTypeDef L9963E_reg_write(L9963E_HandleTypeDef *handle, uint8_t device, L9963E_RegistersAddrTypeDef address, L9963E_RegisterUnionTypeDef *data);
+uint8_t L9963E_crc_calc(L9963E_CmdTypeDef *cmd);
+
+#endif //L9963E_H
