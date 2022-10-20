@@ -64,11 +64,53 @@ struct L9963E_HandleStruct {
         uint8_t bne_pin;
 };
 typedef struct L9963E_HandleStruct L9963E_HandleTypeDef;
-
+/**
+ * @brief     Initialize the handle 
+ * 
+ * @param     handle Reference handle to be initialized
+ * @param     hspi Reference to the spi handle to be used
+ * @param     cs_port Reference to the Chip Select port
+ * @param     cs_pin Chip Select pin
+ * @param     txen_port Reference to the TXEN port
+ * @param     txen_pin TXEN pin
+ * @param     bne_port Reference to the BNE port
+ * @param     bne_pin BNE pin
+ * @return    HAL_OK on success, HAL_ERROR on failure
+ */
 HAL_StatusTypeDef L9963E_init(L9963E_HandleTypeDef *handle, SPI_HandleTypeDef *hspi, GPIO_TypeDef *cs_port, uint8_t cs_pin, GPIO_TypeDef *txen_port, uint8_t txen_pin, GPIO_TypeDef *bne_port, uint8_t bne_pin);
+/**
+ * @brief     Wakes up the IC 
+ * 
+ * @param     handle Reference to the handle
+ * @return    HAL_OK on success, HAL_ERROR on failure
+ */
 HAL_StatusTypeDef L9963E_wakeup(L9963E_HandleTypeDef *handle);
+/**
+ * @brief     Reads a register
+ * 
+ * @param     handle Reference to the handle
+ * @param     device Device id (cannot be 0x0)
+ * @param     address Address of the register to be read
+ * @param     data Reference to the structure to be populated with the read data
+ * @return    HAL_OK on success, HAL_ERROR on failure
+ */
 HAL_StatusTypeDef L9963E_reg_read(L9963E_HandleTypeDef *handle, uint8_t device, L9963E_RegistersAddrTypeDef address, L9963E_RegisterUnionTypeDef *data);
+/**
+ * @brief     Writes a register
+ * 
+ * @param     handle Reference to the handle
+ * @param     device Device id (can be 0x0 for broadcast)
+ * @param     address Address of the register to be read
+ * @param     data Data to be written
+ * @return    HAL_OK on success, HAL_ERROR on failure
+ */
 HAL_StatusTypeDef L9963E_reg_write(L9963E_HandleTypeDef *handle, uint8_t device, L9963E_RegistersAddrTypeDef address, L9963E_RegisterUnionTypeDef *data);
+/**
+ * @brief     Calculates the CRC6
+ * 
+ * @param     cmd Data to be used for the calculation
+ * @return    the calculated CRC6
+ */
 uint8_t L9963E_crc_calc(L9963E_CmdTypeDef *cmd);
 
 #endif //L9963E_H

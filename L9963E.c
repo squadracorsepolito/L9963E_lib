@@ -155,6 +155,10 @@ HAL_StatusTypeDef _L9963E_reg_cmd(L9963E_HandleTypeDef *handle, uint8_t is_write
 }
 
 HAL_StatusTypeDef L9963E_reg_read(L9963E_HandleTypeDef *handle, uint8_t device, L9963E_RegistersTypeDef address, L9963E_RegisterUnionTypeDef *data) {
+    if(device == 0) {
+        return HAL_ERROR;
+    }
+
     return _L9963E_reg_cmd(handle, 0, device, address, data);
 }
 
