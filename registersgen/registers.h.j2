@@ -17,9 +17,8 @@ typedef enum {
 
 {% for reg in registers %}
 typedef struct {
-    uint32_t    :14,
-                {% for field in reg.fields %}{% set template = "%-"+reg.max_field_strlen|string+"s :%s" %}{{ template|format(field.name, field.width) }}{% if not loop.last %},
-                {% else %};{% endif %}{% endfor %}
+    uint32_t    {% for field in reg.fields %}{% set template = "%-"+reg.max_field_strlen|string+"s :%s" %}{{ template|format(field.name, field.width) }},
+                {% endfor %}:14;
 } L9963E_{{ reg.name }}TypeDef;
 {% endfor %}
 

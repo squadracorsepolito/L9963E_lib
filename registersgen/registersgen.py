@@ -50,9 +50,10 @@ for _, row in t.iterrows():
         registers[-1].max_field_strlen = max(registers[-1].max_field_strlen, len(str(row['fieldname']).replace('\r', ''))+4)
         registers[-1].fields.append(Field(str(row['fieldname']).replace('\r', ''), int(row['fieldwidth'])))
 
-for reg in registers:
+for i, reg in enumerate(registers):
     if sum([f.width for f in reg.fields]) != 18:
         print(f"Error on register {reg.name}")
+    registers[i].fields = reg.fields[::-1]
 
 args = {
     "registers": registers,

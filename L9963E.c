@@ -52,7 +52,7 @@ uint8_t crc_table[] = { 0x14, 0xd, 0x26, 0x3f, 0x29, 0x30, 0x1b, 0x2,
                         0x16, 0xf, 0x24, 0x3d, 0x2b, 0x32, 0x19, 0x0 };
 
 
-HAL_StatusTypeDef L9963E_init(L9963E_HandleTypeDef *handle, SPI_HandleTypeDef *hspi, GPIO_TypeDef *cs_port, uint8_t cs_pin, GPIO_TypeDef *txen_port, uint8_t txen_pin, GPIO_TypeDef *bne_port, uint8_t bne_pin) {
+HAL_StatusTypeDef L9963E_init(L9963E_HandleTypeDef *handle, SPI_HandleTypeDef *hspi, GPIO_TypeDef *cs_port, uint16_t cs_pin, GPIO_TypeDef *txen_port, uint16_t txen_pin, GPIO_TypeDef *bne_port, uint16_t bne_pin) {
     if(handle == NULL) {
         return HAL_ERROR;
     }
@@ -101,7 +101,7 @@ HAL_StatusTypeDef L9963E_wakeup(L9963E_HandleTypeDef *handle) {
     return errorcode;
 }
 
-HAL_StatusTypeDef _L9963E_reg_cmd(L9963E_HandleTypeDef *handle, uint8_t is_write, uint8_t device, L9963E_RegistersTypeDef address, L9963E_RegisterUnionTypeDef *data) {
+HAL_StatusTypeDef _L9963E_reg_cmd(L9963E_HandleTypeDef *handle, uint8_t is_write, uint8_t device, L9963E_RegistersAddrTypeDef address, L9963E_RegisterUnionTypeDef *data) {
     L9963E_CmdTypeDef cmd;
     HAL_StatusTypeDef errorcode = HAL_OK;
     uint32_t current_tick;
@@ -139,9 +139,11 @@ HAL_StatusTypeDef _L9963E_reg_cmd(L9963E_HandleTypeDef *handle, uint8_t is_write
                 return HAL_TIMEOUT;
             }
         }
-
+        
         L9963E_TXEN_LOW(handle);
-        errorcode = HAL_SPI_Receive(handle->hspi, (uint8_t*)&cmd, 5, 10);
+        L9963E_CS_LOW(handle);
+        errorcode = HAL_SPI_Receive(handle->hspi, (uint8_t*)&cmd, 5, 100);
+        L9963E_CS_HIGH(handle);
         L9963E_TXEN_HIGH(handle);
 
         if(errorcode != HAL_OK) {
@@ -154,7 +156,7 @@ HAL_StatusTypeDef _L9963E_reg_cmd(L9963E_HandleTypeDef *handle, uint8_t is_write
     return HAL_OK;
 }
 
-HAL_StatusTypeDef L9963E_reg_read(L9963E_HandleTypeDef *handle, uint8_t device, L9963E_RegistersTypeDef address, L9963E_RegisterUnionTypeDef *data) {
+HAL_StatusTypeDef L9963E_reg_read(L9963E_HandleTypeDef *handle, uint8_t device, L9963E_RegistersAddrTypeDef address, L9963E_RegisterUnionTypeDef *data) {
     if(device == 0) {
         return HAL_ERROR;
     }
@@ -171,13 +173,11 @@ uint8_t L9963E_crc_calc(L9963E_CmdTypeDef *cmd) {
     const uint8_t seed = 0b111000;
     //uint8_t index;
 
-    uint64_t data = *((uint64_t*)cmd) & 0xFFFFFFFFC0;
-    data |= seed;
-
-    //slowest implementation possible, waiting to be verified in order to use table-based implementation
-    for(int8_t shift=33; shift>=0; --shift) {
-        if((data & ((uint64_t)1 << (shift+6)))) {
-            data ^= ((uint64_t)poly << shift);
+    volatile uint64_t data = ((uint64_t)seed << 40) | (*((uint64_t*)cmd) & 0xFFFFFFFFC0);
+    
+    for(int8_t i=39; i>=0; --i) {
+        if(data & ((uint64_t)1 << (i+6))) {
+            data ^= (uint64_t)poly << (i);
         }
     }
 

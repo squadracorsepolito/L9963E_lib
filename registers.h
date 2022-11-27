@@ -107,971 +107,971 @@ typedef enum {
 
 
 typedef struct {
-    uint32_t    :14,
-                chip_ID            :5,
-                isotx_en_h         :1,
-                out_res_tx_iso     :2,
-                iso_freq_sel       :2,
-                Noreg7             :1,
-                HeartBeatCycle     :3,
-                FaultH_EN          :1,
-                HeartBeat_En       :1,
+    uint32_t    FaultL_force       :1,
                 Farthest_Unit      :1,
-                FaultL_force       :1;
+                HeartBeat_En       :1,
+                FaultH_EN          :1,
+                HeartBeatCycle     :3,
+                Noreg7             :1,
+                iso_freq_sel       :2,
+                out_res_tx_iso     :2,
+                isotx_en_h         :1,
+                chip_ID            :5,
+                :14;
 } L9963E_DEV_GEN_CFGTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                CommTimeout                   :2,
+    uint32_t    Vcell_bal_UV_delta_thr        :8,
                 Gpio_fastchg_OT_delta_thr     :8,
-                Vcell_bal_UV_delta_thr        :8;
+                CommTimeout                   :2,
+                :14;
 } L9963E_fastch_baluvTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                comm_timeout_dis     :1,
-                slp_bal_conf         :1,
-                bal_start            :1,
-                bal_stop             :1,
+    uint32_t    WDTimedBalTimer      :7,
                 TimedBalTimer        :7,
-                WDTimedBalTimer      :7;
+                bal_stop             :1,
+                bal_start            :1,
+                slp_bal_conf         :1,
+                comm_timeout_dis     :1,
+                :14;
 } L9963E_Bal_1TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Balmode               :2,
-                TimedBalacc           :1,
-                ThrTimedBalCell14     :7,
+    uint32_t    ThrTimedBalCell13     :7,
                 Noreg7                :1,
-                ThrTimedBalCell13     :7;
+                ThrTimedBalCell14     :7,
+                TimedBalacc           :1,
+                Balmode               :2,
+                :14;
 } L9963E_Bal_2TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                first_wup_done         :1,
-                trimming_retrigger     :1,
-                Lock_isoh_isofreq      :1,
-                ThrTimedBalCell12      :7,
+    uint32_t    ThrTimedBalCell11      :7,
                 Noreg7                 :1,
-                ThrTimedBalCell11      :7;
+                ThrTimedBalCell12      :7,
+                Lock_isoh_isofreq      :1,
+                trimming_retrigger     :1,
+                first_wup_done         :1,
+                :14;
 } L9963E_Bal_3TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                clk_mon_en            :1,
-                Noreg16               :1,
-                clk_mon_init_done     :1,
-                ThrTimedBalCell10     :7,
+    uint32_t    ThrTimedBalCell9      :7,
                 Noreg7                :1,
-                ThrTimedBalCell9      :7;
+                ThrTimedBalCell10     :7,
+                clk_mon_init_done     :1,
+                Noreg16               :1,
+                clk_mon_en            :1,
+                :14;
 } L9963E_Bal_4TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                transceiver_on_by_up        :1,
-                transceiver_valid_by_up     :1,
-                Noreg15                     :1,
-                ThrTimedBalCell8            :7,
+    uint32_t    ThrTimedBalCell7            :7,
                 Noreg7                      :1,
-                ThrTimedBalCell7            :7;
+                ThrTimedBalCell8            :7,
+                Noreg15                     :1,
+                transceiver_valid_by_up     :1,
+                transceiver_on_by_up        :1,
+                :14;
 } L9963E_Bal_5TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17              :1,
-                Noreg16              :1,
-                Noreg15              :1,
-                ThrTimedBalCell6     :7,
+    uint32_t    ThrTimedBalCell5     :7,
                 Noreg7               :1,
-                ThrTimedBalCell5     :7;
+                ThrTimedBalCell6     :7,
+                Noreg15              :1,
+                Noreg16              :1,
+                Noreg17              :1,
+                :14;
 } L9963E_Bal_6TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17              :1,
-                Noreg16              :1,
-                Noreg15              :1,
-                ThrTimedBalCell4     :7,
+    uint32_t    ThrTimedBalCell3     :7,
                 Noreg7               :1,
-                ThrTimedBalCell3     :7;
+                ThrTimedBalCell4     :7,
+                Noreg15              :1,
+                Noreg16              :1,
+                Noreg17              :1,
+                :14;
 } L9963E_Bal_7TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17              :1,
-                Noreg16              :1,
-                Noreg15              :1,
-                ThrTimedBalCell2     :7,
+    uint32_t    ThrTimedBalCell1     :7,
                 Noreg7               :1,
-                ThrTimedBalCell1     :7;
+                ThrTimedBalCell2     :7,
+                Noreg15              :1,
+                Noreg16              :1,
+                Noreg17              :1,
+                :14;
 } L9963E_Bal_8TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17           :1,
-                Noreg16           :1,
+    uint32_t    threshVcellUV     :8,
                 threshVcellOV     :8,
-                threshVcellUV     :8;
+                Noreg16           :1,
+                Noreg17           :1,
+                :14;
 } L9963E_VCELL_THRESH_UV_OVTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17             :1,
-                Noreg16             :1,
+    uint32_t    VBATT_SUM_UV_TH     :8,
                 VBATT_SUM_OV_TH     :8,
-                VBATT_SUM_UV_TH     :8;
+                Noreg16             :1,
+                Noreg17             :1,
+                :14;
 } L9963E_VBATT_SUM_THTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                ADC_CROSS_CHECK      :1,
-                TCYCLE_OVF           :1,
-                SOC                  :1,
-                OVR_LATCH            :1,
-                CONF_CYCLIC_EN       :1,
-                DUTY_ON              :1,
-                ADC_FILTER_SOC       :3,
-                GPIO_CONV            :1,
-                GPIO_TERM_CONV       :1,
-                CELL_TERM_CONV       :1,
-                BAL_TERM_CONV        :1,
-                HWSC                 :1,
+    uint32_t    CYCLIC_CONTINOUS     :1,
                 TCYCLE               :3,
-                CYCLIC_CONTINOUS     :1;
+                HWSC                 :1,
+                BAL_TERM_CONV        :1,
+                CELL_TERM_CONV       :1,
+                GPIO_TERM_CONV       :1,
+                GPIO_CONV            :1,
+                ADC_FILTER_SOC       :3,
+                DUTY_ON              :1,
+                CONF_CYCLIC_EN       :1,
+                OVR_LATCH            :1,
+                SOC                  :1,
+                TCYCLE_OVF           :1,
+                ADC_CROSS_CHECK      :1,
+                :14;
 } L9963E_ADCV_CONVTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                T_CELL_SET                :2,
-                NCYCLE_GPIO_TERM          :3,
-                NCYCLE_CELL_TERM          :3,
-                NCYCLE_BAL_TERM           :3,
-                BAL_TIM_AUTO_PAUSE        :1,
-                BAL_AUTO_PAUSE            :1,
-                CYCLIC_UPDATE             :1,
-                CROSS_ODD_EVEN_CELL       :1,
-                PCB_open_en_odd_curr      :1,
+    uint32_t    Noreg0                    :1,
                 PCB_open_en_even_curr     :1,
-                Noreg0                    :1;
+                PCB_open_en_odd_curr      :1,
+                CROSS_ODD_EVEN_CELL       :1,
+                CYCLIC_UPDATE             :1,
+                BAL_AUTO_PAUSE            :1,
+                BAL_TIM_AUTO_PAUSE        :1,
+                NCYCLE_BAL_TERM           :3,
+                NCYCLE_CELL_TERM          :3,
+                NCYCLE_GPIO_TERM          :3,
+                T_CELL_SET                :2,
+                :14;
 } L9963E_NCYCLE_PROG_1TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                VTREF_EN             :1,
-                VTREF_DYN_EN         :1,
-                NCYCLE_GPIO          :3,
-                NCYCLE_HWSC          :3,
-                Noreg9               :1,
-                ADC_FILTER_CYCLE     :3,
+    uint32_t    ADC_FILTER_SLEEP     :3,
                 TCYCLE_SLEEP         :3,
-                ADC_FILTER_SLEEP     :3;
+                ADC_FILTER_CYCLE     :3,
+                Noreg9               :1,
+                NCYCLE_HWSC          :3,
+                NCYCLE_GPIO          :3,
+                VTREF_DYN_EN         :1,
+                VTREF_EN             :1,
+                :14;
 } L9963E_NCYCLE_PROG_2TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17     :1,
-                Noreg16     :1,
-                BAL14       :2,
-                BAL13       :2,
-                BAL12       :2,
-                BAL11       :2,
-                BAL10       :2,
-                BAL9        :2,
+    uint32_t    BAL7        :2,
                 BAL8        :2,
-                BAL7        :2;
+                BAL9        :2,
+                BAL10       :2,
+                BAL11       :2,
+                BAL12       :2,
+                BAL13       :2,
+                BAL14       :2,
+                Noreg16     :1,
+                Noreg17     :1,
+                :14;
 } L9963E_BalCell14_7actTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17     :1,
-                Noreg16     :1,
-                BAL6        :2,
-                BAL5        :2,
-                BAL4        :2,
-                BAL3        :2,
-                BAL2        :2,
-                BAL1        :2,
-                Noreg3      :1,
-                Noreg2      :1,
+    uint32_t    eof_bal     :1,
                 bal_on      :1,
-                eof_bal     :1;
+                Noreg2      :1,
+                Noreg3      :1,
+                BAL1        :2,
+                BAL2        :2,
+                BAL3        :2,
+                BAL4        :2,
+                BAL5        :2,
+                BAL6        :2,
+                Noreg16     :1,
+                Noreg17     :1,
+                :14;
 } L9963E_BalCell6_1actTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17        :1,
-                Noreg16        :1,
-                SW_RST         :2,
-                GO2SLP         :2,
-                FSMstatus      :4,
-                Noreg7         :1,
-                Noreg6         :1,
-                Noreg5         :1,
-                wu_gpio7       :1,
-                wu_spi         :1,
-                wu_isoline     :1,
+    uint32_t    wu_cyc_wup     :1,
                 wu_faulth      :1,
-                wu_cyc_wup     :1;
+                wu_isoline     :1,
+                wu_spi         :1,
+                wu_gpio7       :1,
+                Noreg5         :1,
+                Noreg6         :1,
+                Noreg7         :1,
+                FSMstatus      :4,
+                GO2SLP         :2,
+                SW_RST         :2,
+                Noreg16        :1,
+                Noreg17        :1,
+                :14;
 } L9963E_FSMTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                GPO9on      :1,
-                GPO8on      :1,
-                GPO7on      :1,
-                GPO6on      :1,
-                GPO5on      :1,
-                GPO4on      :1,
-                GPO3on      :1,
-                Noreg10     :1,
-                Noreg9      :1,
-                GPI9        :1,
-                GPI8        :1,
-                GPI7        :1,
-                GPI6        :1,
-                GPI5        :1,
-                GPI4        :1,
-                GPI3        :1,
+    uint32_t    Noreg0      :1,
                 Noreg1      :1,
-                Noreg0      :1;
+                GPI3        :1,
+                GPI4        :1,
+                GPI5        :1,
+                GPI6        :1,
+                GPI7        :1,
+                GPI8        :1,
+                GPI9        :1,
+                Noreg9      :1,
+                Noreg10     :1,
+                GPO3on      :1,
+                GPO4on      :1,
+                GPO5on      :1,
+                GPO6on      :1,
+                GPO7on      :1,
+                GPO8on      :1,
+                GPO9on      :1,
+                :14;
 } L9963E_GPOxOn_and_GPI93TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                GPIO9_CONFIG     :2,
-                GPIO8_CONFIG     :2,
-                GPIO7_CONFIG     :2,
-                GPIO6_CONFIG     :2,
-                GPIO5_CONFIG     :2,
-                GPIO4_CONFIG     :2,
-                GPIO3_CONFIG     :2,
-                GPIO7_WUP_EN     :1,
-                Noreg2           :1,
+    uint32_t    Noreg0           :1,
                 Noreg1           :1,
-                Noreg0           :1;
+                Noreg2           :1,
+                GPIO7_WUP_EN     :1,
+                GPIO3_CONFIG     :2,
+                GPIO4_CONFIG     :2,
+                GPIO5_CONFIG     :2,
+                GPIO6_CONFIG     :2,
+                GPIO7_CONFIG     :2,
+                GPIO8_CONFIG     :2,
+                GPIO9_CONFIG     :2,
+                :14;
 } L9963E_GPIO9_3_CONFTypeDef;
 
 typedef struct {
-    uint32_t    :14,
+    uint32_t    GPIO3_UT_TH     :9,
                 GPIO3_OT_TH     :9,
-                GPIO3_UT_TH     :9;
+                :14;
 } L9963E_GPIO3_THRTypeDef;
 
 typedef struct {
-    uint32_t    :14,
+    uint32_t    GPIO4_UT_TH     :9,
                 GPIO4_OT_TH     :9,
-                GPIO4_UT_TH     :9;
+                :14;
 } L9963E_GPIO4_THRTypeDef;
 
 typedef struct {
-    uint32_t    :14,
+    uint32_t    GPIO5_UT_TH     :9,
                 GPIO5_OT_TH     :9,
-                GPIO5_UT_TH     :9;
+                :14;
 } L9963E_GPIO5_THRTypeDef;
 
 typedef struct {
-    uint32_t    :14,
+    uint32_t    GPIO6_UT_TH     :9,
                 GPIO6_OT_TH     :9,
-                GPIO6_UT_TH     :9;
+                :14;
 } L9963E_GPIO6_THRTypeDef;
 
 typedef struct {
-    uint32_t    :14,
+    uint32_t    GPIO7_UT_TH     :9,
                 GPIO7_OT_TH     :9,
-                GPIO7_UT_TH     :9;
+                :14;
 } L9963E_GPIO7_THRTypeDef;
 
 typedef struct {
-    uint32_t    :14,
+    uint32_t    GPIO8_UT_TH     :9,
                 GPIO8_OT_TH     :9,
-                GPIO8_UT_TH     :9;
+                :14;
 } L9963E_GPIO8_THRTypeDef;
 
 typedef struct {
-    uint32_t    :14,
+    uint32_t    GPIO9_UT_TH     :9,
                 GPIO9_OT_TH     :9,
-                GPIO9_UT_TH     :9;
+                :14;
 } L9963E_GPIO9_THRTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17        :1,
-                Noreg16        :1,
-                Noreg15        :1,
-                Noreg14        :1,
-                VCELL14_EN     :1,
-                VCELL13_EN     :1,
-                VCELL12_EN     :1,
-                VCELL11_EN     :1,
-                VCELL10_EN     :1,
-                VCELL9_EN      :1,
-                VCELL8_EN      :1,
-                VCELL7_EN      :1,
-                VCELL6_EN      :1,
-                VCELL5_EN      :1,
-                VCELL4_EN      :1,
-                VCELL3_EN      :1,
+    uint32_t    VCELL1_EN      :1,
                 VCELL2_EN      :1,
-                VCELL1_EN      :1;
+                VCELL3_EN      :1,
+                VCELL4_EN      :1,
+                VCELL5_EN      :1,
+                VCELL6_EN      :1,
+                VCELL7_EN      :1,
+                VCELL8_EN      :1,
+                VCELL9_EN      :1,
+                VCELL10_EN     :1,
+                VCELL11_EN     :1,
+                VCELL12_EN     :1,
+                VCELL13_EN     :1,
+                VCELL14_EN     :1,
+                Noreg14        :1,
+                Noreg15        :1,
+                Noreg16        :1,
+                Noreg17        :1,
+                :14;
 } L9963E_VCELLS_ENTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17                :1,
-                Noreg16                :1,
-                Noreg15                :1,
-                Noreg14                :1,
-                VCELL14_BAL_UV_MSK     :1,
-                VCELL13_BAL_UV_MSK     :1,
-                VCELL12_BAL_UV_MSK     :1,
-                VCELL11_BAL_UV_MSK     :1,
-                VCELL10_BAL_UV_MSK     :1,
-                VCELL9_BAL_UV_MSK      :1,
-                VCELL8_BAL_UV_MSK      :1,
-                VCELL7_BAL_UV_MSK      :1,
-                VCELL6_BAL_UV_MSK      :1,
-                VCELL5_BAL_UV_MSK      :1,
-                VCELL4_BAL_UV_MSK      :1,
-                VCELL3_BAL_UV_MSK      :1,
+    uint32_t    VCELL1_BAL_UV_MSK      :1,
                 VCELL2_BAL_UV_MSK      :1,
-                VCELL1_BAL_UV_MSK      :1;
+                VCELL3_BAL_UV_MSK      :1,
+                VCELL4_BAL_UV_MSK      :1,
+                VCELL5_BAL_UV_MSK      :1,
+                VCELL6_BAL_UV_MSK      :1,
+                VCELL7_BAL_UV_MSK      :1,
+                VCELL8_BAL_UV_MSK      :1,
+                VCELL9_BAL_UV_MSK      :1,
+                VCELL10_BAL_UV_MSK     :1,
+                VCELL11_BAL_UV_MSK     :1,
+                VCELL12_BAL_UV_MSK     :1,
+                VCELL13_BAL_UV_MSK     :1,
+                VCELL14_BAL_UV_MSK     :1,
+                Noreg14                :1,
+                Noreg15                :1,
+                Noreg16                :1,
+                Noreg17                :1,
+                :14;
 } L9963E_FaultmaskTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                EEPROM_DWNLD_DONE             :1,
-                EEPROM_CRC_ERR_SECT_0         :1,
-                EEPROM_CRC_ERRMSK_SECT_0      :1,
-                EEPROM_CRC_ERR_CAL_RAM        :1,
-                EEPROM_CRC_ERRMSK_CAL_RAM     :1,
-                EEPROM_CRC_ERR_CAL_FF         :1,
-                EEPROM_CRC_ERRMSK_CAL_FF      :1,
-                RAM_CRC_ERR                   :1,
-                RAM_CRC_ERRMSK                :1,
-                trim_dwnl_tried               :1,
-                TrimmCalOk                    :1,
-                Gpio9_fastchg_OT_MSK          :1,
-                Gpio8_fastchg_OT_MSK          :1,
-                Gpio7_fastchg_OT_MSK          :1,
-                Gpio6_fastchg_OT_MSK          :1,
-                Gpio5_fastchg_OT_MSK          :1,
+    uint32_t    Gpio3_fastchg_OT_MSK          :1,
                 Gpio4_fastchg_OT_MSK          :1,
-                Gpio3_fastchg_OT_MSK          :1;
+                Gpio5_fastchg_OT_MSK          :1,
+                Gpio6_fastchg_OT_MSK          :1,
+                Gpio7_fastchg_OT_MSK          :1,
+                Gpio8_fastchg_OT_MSK          :1,
+                Gpio9_fastchg_OT_MSK          :1,
+                TrimmCalOk                    :1,
+                trim_dwnl_tried               :1,
+                RAM_CRC_ERRMSK                :1,
+                RAM_CRC_ERR                   :1,
+                EEPROM_CRC_ERRMSK_CAL_FF      :1,
+                EEPROM_CRC_ERR_CAL_FF         :1,
+                EEPROM_CRC_ERRMSK_CAL_RAM     :1,
+                EEPROM_CRC_ERR_CAL_RAM        :1,
+                EEPROM_CRC_ERRMSK_SECT_0      :1,
+                EEPROM_CRC_ERR_SECT_0         :1,
+                EEPROM_DWNLD_DONE             :1,
+                :14;
 } L9963E_Faultmask2TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                adc_ovc_curr_threshold_norm     :18;
+    uint32_t    adc_ovc_curr_threshold_norm     :18,
+                :14;
 } L9963E_CSA_THRESH_NORMTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                adc_ovc_curr_threshold_sleep     :5,
-                CoulombCounter_en                :1,
-                ovc_sleep_msk                    :1,
-                ovc_norm_msk                     :1,
-                sense_plus_open                  :1,
-                sense_minus_open                 :1,
-                Noreg7                           :1,
-                Gpio9_OT_UT_MSK                  :1,
-                Gpio8_OT_UT_MSK                  :1,
-                Gpio7_OT_UT_MSK                  :1,
-                Gpio6_OT_UT_MSK                  :1,
-                Gpio5_OT_UT_MSK                  :1,
+    uint32_t    Gpio3_OT_UT_MSK                  :1,
                 Gpio4_OT_UT_MSK                  :1,
-                Gpio3_OT_UT_MSK                  :1;
+                Gpio5_OT_UT_MSK                  :1,
+                Gpio6_OT_UT_MSK                  :1,
+                Gpio7_OT_UT_MSK                  :1,
+                Gpio8_OT_UT_MSK                  :1,
+                Gpio9_OT_UT_MSK                  :1,
+                Noreg7                           :1,
+                sense_minus_open                 :1,
+                sense_plus_open                  :1,
+                ovc_norm_msk                     :1,
+                ovc_sleep_msk                    :1,
+                CoulombCounter_en                :1,
+                adc_ovc_curr_threshold_sleep     :5,
+                :14;
 } L9963E_CSA_GPIO_MSKTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17          :1,
+    uint32_t    VCell1           :16,
                 d_rdy_Vcell1     :1,
-                VCell1           :16;
+                Noreg17          :1,
+                :14;
 } L9963E_Vcell1TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17          :1,
+    uint32_t    VCell2           :16,
                 d_rdy_Vcell2     :1,
-                VCell2           :16;
+                Noreg17          :1,
+                :14;
 } L9963E_Vcell2TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17          :1,
+    uint32_t    VCell3           :16,
                 d_rdy_Vcell3     :1,
-                VCell3           :16;
+                Noreg17          :1,
+                :14;
 } L9963E_Vcell3TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17          :1,
+    uint32_t    VCell4           :16,
                 d_rdy_Vcell4     :1,
-                VCell4           :16;
+                Noreg17          :1,
+                :14;
 } L9963E_Vcell4TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17          :1,
+    uint32_t    VCell5           :16,
                 d_rdy_Vcell5     :1,
-                VCell5           :16;
+                Noreg17          :1,
+                :14;
 } L9963E_Vcell5TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17          :1,
+    uint32_t    VCell6           :16,
                 d_rdy_Vcell6     :1,
-                VCell6           :16;
+                Noreg17          :1,
+                :14;
 } L9963E_Vcell6TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17          :1,
+    uint32_t    VCell7           :16,
                 d_rdy_Vcell7     :1,
-                VCell7           :16;
+                Noreg17          :1,
+                :14;
 } L9963E_Vcell7TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17          :1,
+    uint32_t    VCell8           :16,
                 d_rdy_Vcell8     :1,
-                VCell8           :16;
+                Noreg17          :1,
+                :14;
 } L9963E_Vcell8TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17          :1,
+    uint32_t    VCell9           :16,
                 d_rdy_Vcell9     :1,
-                VCell9           :16;
+                Noreg17          :1,
+                :14;
 } L9963E_Vcell9TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17           :1,
+    uint32_t    VCell10           :16,
                 d_rdy_Vcell10     :1,
-                VCell10           :16;
+                Noreg17           :1,
+                :14;
 } L9963E_Vcell10TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17           :1,
+    uint32_t    VCell11           :16,
                 d_rdy_Vcell11     :1,
-                VCell11           :16;
+                Noreg17           :1,
+                :14;
 } L9963E_Vcell11TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17           :1,
+    uint32_t    VCell12           :16,
                 d_rdy_Vcell12     :1,
-                VCell12           :16;
+                Noreg17           :1,
+                :14;
 } L9963E_Vcell12TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17           :1,
+    uint32_t    VCell13           :16,
                 d_rdy_Vcell13     :1,
-                VCell13           :16;
+                Noreg17           :1,
+                :14;
 } L9963E_Vcell13TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17           :1,
+    uint32_t    VCell14           :16,
                 d_rdy_Vcell14     :1,
-                VCell14           :16;
+                Noreg17           :1,
+                :14;
 } L9963E_Vcell14TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                CUR_INST_Synch     :18;
+    uint32_t    CUR_INST_Synch     :18,
+                :14;
 } L9963E_Ibattery_synchTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                CUR_INST_calib     :18;
+    uint32_t    CUR_INST_calib     :18,
+                :14;
 } L9963E_Ibattery_calibTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17            :1,
+    uint32_t    CoulombCntTime     :16,
                 Noreg16            :1,
-                CoulombCntTime     :16;
+                Noreg17            :1,
+                :14;
 } L9963E_CoulCntrTimeTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17                :1,
+    uint32_t    CoulombCounter_msb     :16,
                 Noreg16                :1,
-                CoulombCounter_msb     :16;
+                Noreg17                :1,
+                :14;
 } L9963E_CoulCntr_msbTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17                :1,
+    uint32_t    CoulombCounter_lsb     :16,
                 Noreg16                :1,
-                CoulombCounter_lsb     :16;
+                Noreg17                :1,
+                :14;
 } L9963E_CoulCntr_lsbTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                ratio_abs_3_sel     :1,
+    uint32_t    GPIO3_MEAS          :16,
                 d_rdy_gpio3         :1,
-                GPIO3_MEAS          :16;
+                ratio_abs_3_sel     :1,
+                :14;
 } L9963E_GPIO3_MEASTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                ratio_abs_4_sel     :1,
+    uint32_t    GPIO4_MEAS          :16,
                 d_rdy_gpio4         :1,
-                GPIO4_MEAS          :16;
+                ratio_abs_4_sel     :1,
+                :14;
 } L9963E_GPIO4_MEASTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                ratio_abs_5_sel     :1,
+    uint32_t    GPIO5_MEAS          :16,
                 d_rdy_gpio5         :1,
-                GPIO5_MEAS          :16;
+                ratio_abs_5_sel     :1,
+                :14;
 } L9963E_GPIO5_MEASTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                ratio_abs_6_sel     :1,
+    uint32_t    GPIO6_MEAS          :16,
                 d_rdy_gpio6         :1,
-                GPIO6_MEAS          :16;
+                ratio_abs_6_sel     :1,
+                :14;
 } L9963E_GPIO6_MEASTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                ratio_abs_7_sel     :1,
+    uint32_t    GPIO7_MEAS          :16,
                 d_rdy_gpio7         :1,
-                GPIO7_MEAS          :16;
+                ratio_abs_7_sel     :1,
+                :14;
 } L9963E_GPIO7_MEASTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                ratio_abs_8_sel     :1,
+    uint32_t    GPIO8_MEAS          :16,
                 d_rdy_gpio8         :1,
-                GPIO8_MEAS          :16;
+                ratio_abs_8_sel     :1,
+                :14;
 } L9963E_GPIO8_MEASTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                ratio_abs_9_sel     :1,
+    uint32_t    GPIO9_MEAS          :16,
                 d_rdy_gpio9         :1,
-                GPIO9_MEAS          :16;
+                ratio_abs_9_sel     :1,
+                :14;
 } L9963E_GPIO9_MEASTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17      :1,
-                Noreg16      :1,
-                Noreg15      :1,
-                Noreg14      :1,
-                Noreg13      :1,
-                Noreg12      :1,
-                Noreg11      :1,
-                Noreg10      :1,
-                Noreg9       :1,
+    uint32_t    TempChip     :8,
                 OTchip       :1,
-                TempChip     :8;
+                Noreg9       :1,
+                Noreg10      :1,
+                Noreg11      :1,
+                Noreg12      :1,
+                Noreg13      :1,
+                Noreg14      :1,
+                Noreg15      :1,
+                Noreg16      :1,
+                Noreg17      :1,
+                :14;
 } L9963E_TempChipTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17                 :1,
-                Noreg16                 :1,
-                Noreg15                 :1,
-                Noreg14                 :1,
-                VANA_OV                 :1,
-                VDIG_OV                 :1,
-                VTREF_UV                :1,
-                VTREF_OV                :1,
-                VREG_UV                 :1,
-                VREG_OV                 :1,
-                VCOM_OV                 :1,
-                VCOM_UV                 :1,
-                HeartBeat_fault         :1,
-                FaultHline_fault        :1,
-                Fault_L_line_status     :1,
-                Noreg2                  :1,
+    uint32_t    Comm_timeout_flt        :1,
                 Noreg1                  :1,
-                Comm_timeout_flt        :1;
+                Noreg2                  :1,
+                Fault_L_line_status     :1,
+                FaultHline_fault        :1,
+                HeartBeat_fault         :1,
+                VCOM_UV                 :1,
+                VCOM_OV                 :1,
+                VREG_OV                 :1,
+                VREG_UV                 :1,
+                VTREF_OV                :1,
+                VTREF_UV                :1,
+                VDIG_OV                 :1,
+                VANA_OV                 :1,
+                Noreg14                 :1,
+                Noreg15                 :1,
+                Noreg16                 :1,
+                Noreg17                 :1,
+                :14;
 } L9963E_Faults1TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17                  :1,
-                Noreg16                  :1,
-                Noreg15                  :1,
-                Noreg14                  :1,
-                Noreg13                  :1,
-                SPIENlatch               :1,
-                Noreg11                  :1,
-                OSCFail                  :1,
-                Noreg9                   :1,
-                loss_agnd                :1,
-                loss_dgnd                :1,
-                loss_cgnd                :1,
-                loss_gndref              :1,
-                Noreg4                   :1,
-                CoCouOvF                 :1,
-                EoBtimeerror             :1,
+    uint32_t    curr_sense_ovc_norm      :1,
                 curr_sense_ovc_sleep     :1,
-                curr_sense_ovc_norm      :1;
+                EoBtimeerror             :1,
+                CoCouOvF                 :1,
+                Noreg4                   :1,
+                loss_gndref              :1,
+                loss_cgnd                :1,
+                loss_dgnd                :1,
+                loss_agnd                :1,
+                Noreg9                   :1,
+                OSCFail                  :1,
+                Noreg11                  :1,
+                SPIENlatch               :1,
+                Noreg13                  :1,
+                Noreg14                  :1,
+                Noreg15                  :1,
+                Noreg16                  :1,
+                Noreg17                  :1,
+                :14;
 } L9963E_Faults2TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17        :1,
-                Noreg16        :1,
-                BAL14_OPEN     :1,
-                BAL13_OPEN     :1,
-                BAL12_OPEN     :1,
-                BAL11_OPEN     :1,
-                BAL10_OPEN     :1,
-                BAL9_OPEN      :1,
-                BAL8_OPEN      :1,
-                BAL7_OPEN      :1,
-                BAL6_OPEN      :1,
-                BAL5_OPEN      :1,
-                BAL4_OPEN      :1,
-                BAL3_OPEN      :1,
-                BAL2_OPEN      :1,
-                BAL1_OPEN      :1,
+    uint32_t    Noreg0         :1,
                 Noreg1         :1,
-                Noreg0         :1;
+                BAL1_OPEN      :1,
+                BAL2_OPEN      :1,
+                BAL3_OPEN      :1,
+                BAL4_OPEN      :1,
+                BAL5_OPEN      :1,
+                BAL6_OPEN      :1,
+                BAL7_OPEN      :1,
+                BAL8_OPEN      :1,
+                BAL9_OPEN      :1,
+                BAL10_OPEN     :1,
+                BAL11_OPEN     :1,
+                BAL12_OPEN     :1,
+                BAL13_OPEN     :1,
+                BAL14_OPEN     :1,
+                Noreg16        :1,
+                Noreg17        :1,
+                :14;
 } L9963E_BAL_OPENTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17         :1,
-                Noreg16         :1,
-                BAL14_SHORT     :1,
-                BAL13_SHORT     :1,
-                BAL12_SHORT     :1,
-                BAL11_SHORT     :1,
-                BAL10_SHORT     :1,
-                BAL9_SHORT      :1,
-                BAL8_SHORT      :1,
-                BAL7_SHORT      :1,
-                BAL6_SHORT      :1,
-                BAL5_SHORT      :1,
-                BAL4_SHORT      :1,
-                BAL3_SHORT      :1,
-                BAL2_SHORT      :1,
-                BAL1_SHORT      :1,
+    uint32_t    Noreg0          :1,
                 Noreg1          :1,
-                Noreg0          :1;
+                BAL1_SHORT      :1,
+                BAL2_SHORT      :1,
+                BAL3_SHORT      :1,
+                BAL4_SHORT      :1,
+                BAL5_SHORT      :1,
+                BAL6_SHORT      :1,
+                BAL7_SHORT      :1,
+                BAL8_SHORT      :1,
+                BAL9_SHORT      :1,
+                BAL10_SHORT     :1,
+                BAL11_SHORT     :1,
+                BAL12_SHORT     :1,
+                BAL13_SHORT     :1,
+                BAL14_SHORT     :1,
+                Noreg16         :1,
+                Noreg17         :1,
+                :14;
 } L9963E_BAL_SHORTTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                vsum_batt19_2     :18;
+    uint32_t    vsum_batt19_2     :18,
+                :14;
 } L9963E_VSUMBATTTypeDef;
 
 typedef struct {
-    uint32_t    :14,
+    uint32_t    VBATT_DIV        :16,
                 vsum_batt1_0     :2,
-                VBATT_DIV        :16;
+                :14;
 } L9963E_VBATTDIVTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                data_ready_vsum         :1,
-                data_ready_vbattdiv     :1,
-                Noreg15                 :1,
-                CELL14_OPEN             :1,
-                CELL13_OPEN             :1,
-                CELL12_OPEN             :1,
-                CELL11_OPEN             :1,
-                CELL10_OPEN             :1,
-                CELL9_OPEN              :1,
-                CELL8_OPEN              :1,
-                CELL7_OPEN              :1,
-                CELL6_OPEN              :1,
-                CELL5_OPEN              :1,
-                CELL4_OPEN              :1,
-                CELL3_OPEN              :1,
-                CELL2_OPEN              :1,
+    uint32_t    CELL0_OPEN              :1,
                 CELL1_OPEN              :1,
-                CELL0_OPEN              :1;
+                CELL2_OPEN              :1,
+                CELL3_OPEN              :1,
+                CELL4_OPEN              :1,
+                CELL5_OPEN              :1,
+                CELL6_OPEN              :1,
+                CELL7_OPEN              :1,
+                CELL8_OPEN              :1,
+                CELL9_OPEN              :1,
+                CELL10_OPEN             :1,
+                CELL11_OPEN             :1,
+                CELL12_OPEN             :1,
+                CELL13_OPEN             :1,
+                CELL14_OPEN             :1,
+                Noreg15                 :1,
+                data_ready_vbattdiv     :1,
+                data_ready_vsum         :1,
+                :14;
 } L9963E_CELL_OPENTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17          :1,
-                VBATT_WRN_UV     :1,
-                VBATTCRIT_UV     :1,
-                VSUM_UV          :1,
-                VCELL14_UV       :1,
-                VCELL13_UV       :1,
-                VCELL12_UV       :1,
-                VCELL11_UV       :1,
-                VCELL10_UV       :1,
-                VCELL9_UV        :1,
-                VCELL8_UV        :1,
-                VCELL7_UV        :1,
-                VCELL6_UV        :1,
-                VCELL5_UV        :1,
-                VCELL4_UV        :1,
-                VCELL3_UV        :1,
+    uint32_t    VCELL1_UV        :1,
                 VCELL2_UV        :1,
-                VCELL1_UV        :1;
+                VCELL3_UV        :1,
+                VCELL4_UV        :1,
+                VCELL5_UV        :1,
+                VCELL6_UV        :1,
+                VCELL7_UV        :1,
+                VCELL8_UV        :1,
+                VCELL9_UV        :1,
+                VCELL10_UV       :1,
+                VCELL11_UV       :1,
+                VCELL12_UV       :1,
+                VCELL13_UV       :1,
+                VCELL14_UV       :1,
+                VSUM_UV          :1,
+                VBATTCRIT_UV     :1,
+                VBATT_WRN_UV     :1,
+                Noreg17          :1,
+                :14;
 } L9963E_VCELL_UVTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17          :1,
-                VBATT_WRN_OV     :1,
-                VBATTCRIT_OV     :1,
-                VSUM_OV          :1,
-                VCELL14_OV       :1,
-                VCELL13_OV       :1,
-                VCELL12_OV       :1,
-                VCELL11_OV       :1,
-                VCELL10_OV       :1,
-                VCELL9_OV        :1,
-                VCELL8_OV        :1,
-                VCELL7_OV        :1,
-                VCELL6_OV        :1,
-                VCELL5_OV        :1,
-                VCELL4_OV        :1,
-                VCELL3_OV        :1,
+    uint32_t    VCELL1_OV        :1,
                 VCELL2_OV        :1,
-                VCELL1_OV        :1;
+                VCELL3_OV        :1,
+                VCELL4_OV        :1,
+                VCELL5_OV        :1,
+                VCELL6_OV        :1,
+                VCELL7_OV        :1,
+                VCELL8_OV        :1,
+                VCELL9_OV        :1,
+                VCELL10_OV       :1,
+                VCELL11_OV       :1,
+                VCELL12_OV       :1,
+                VCELL13_OV       :1,
+                VCELL14_OV       :1,
+                VSUM_OV          :1,
+                VBATTCRIT_OV     :1,
+                VBATT_WRN_OV     :1,
+                Noreg17          :1,
+                :14;
 } L9963E_VCELL_OVTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17      :1,
-                Noreg16      :1,
-                Noreg15      :1,
-                Noreg14      :1,
-                GPIO9_OT     :1,
-                GPIO8_OT     :1,
-                GPIO7_OT     :1,
-                GPIO6_OT     :1,
-                GPIO5_OT     :1,
-                GPIO4_OT     :1,
-                GPIO3_OT     :1,
-                GPIO9_UT     :1,
-                GPIO8_UT     :1,
-                GPIO7_UT     :1,
-                GPIO6_UT     :1,
-                GPIO5_UT     :1,
+    uint32_t    GPIO3_UT     :1,
                 GPIO4_UT     :1,
-                GPIO3_UT     :1;
+                GPIO5_UT     :1,
+                GPIO6_UT     :1,
+                GPIO7_UT     :1,
+                GPIO8_UT     :1,
+                GPIO9_UT     :1,
+                GPIO3_OT     :1,
+                GPIO4_OT     :1,
+                GPIO5_OT     :1,
+                GPIO6_OT     :1,
+                GPIO7_OT     :1,
+                GPIO8_OT     :1,
+                GPIO9_OT     :1,
+                Noreg14      :1,
+                Noreg15      :1,
+                Noreg16      :1,
+                Noreg17      :1,
+                :14;
 } L9963E_VGPIO_OT_UTTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17            :1,
-                Noreg16            :1,
-                Noreg15            :1,
-                Noreg14            :1,
-                VCELL14_BAL_UV     :1,
-                VCELL13_BAL_UV     :1,
-                VCELL12_BAL_UV     :1,
-                VCELL11_BAL_UV     :1,
-                VCELL10_BAL_UV     :1,
-                VCELL9_BAL_UV      :1,
-                VCELL8_BAL_UV      :1,
-                VCELL7_BAL_UV      :1,
-                VCELL6_BAL_UV      :1,
-                VCELL5_BAL_UV      :1,
-                VCELL4_BAL_UV      :1,
-                VCELL3_BAL_UV      :1,
+    uint32_t    VCELL1_BAL_UV      :1,
                 VCELL2_BAL_UV      :1,
-                VCELL1_BAL_UV      :1;
+                VCELL3_BAL_UV      :1,
+                VCELL4_BAL_UV      :1,
+                VCELL5_BAL_UV      :1,
+                VCELL6_BAL_UV      :1,
+                VCELL7_BAL_UV      :1,
+                VCELL8_BAL_UV      :1,
+                VCELL9_BAL_UV      :1,
+                VCELL10_BAL_UV     :1,
+                VCELL11_BAL_UV     :1,
+                VCELL12_BAL_UV     :1,
+                VCELL13_BAL_UV     :1,
+                VCELL14_BAL_UV     :1,
+                Noreg14            :1,
+                Noreg15            :1,
+                Noreg16            :1,
+                Noreg17            :1,
+                :14;
 } L9963E_VCELL_BAL_UVTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17              :1,
-                Noreg16              :1,
-                Noreg15              :1,
-                Noreg14              :1,
-                GPIO9_OPEN           :1,
-                GPIO8_OPEN           :1,
-                GPIO7_OPEN           :1,
-                GPIO6_OPEN           :1,
-                GPIO5_OPEN           :1,
-                GPIO4_OPEN           :1,
-                GPIO3_OPEN           :1,
-                GPIO9_fastchg_OT     :1,
-                GPIO8_fastchg_OT     :1,
-                GPIO7_fastchg_OT     :1,
-                GPIO6_fastchg_OT     :1,
-                GPIO5_fastchg_OT     :1,
+    uint32_t    GPIO3_fastchg_OT     :1,
                 GPIO4_fastchg_OT     :1,
-                GPIO3_fastchg_OT     :1;
+                GPIO5_fastchg_OT     :1,
+                GPIO6_fastchg_OT     :1,
+                GPIO7_fastchg_OT     :1,
+                GPIO8_fastchg_OT     :1,
+                GPIO9_fastchg_OT     :1,
+                GPIO3_OPEN           :1,
+                GPIO4_OPEN           :1,
+                GPIO5_OPEN           :1,
+                GPIO6_OPEN           :1,
+                GPIO7_OPEN           :1,
+                GPIO8_OPEN           :1,
+                GPIO9_OPEN           :1,
+                Noreg14              :1,
+                Noreg15              :1,
+                Noreg16              :1,
+                Noreg17              :1,
+                :14;
 } L9963E_GPIO_fastchg_OTTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17           :1,
-                Noreg16           :1,
-                Noreg15           :1,
+    uint32_t    MUX_BIST_FAIL     :14,
                 HWSC_DONE         :1,
-                MUX_BIST_FAIL     :14;
+                Noreg15           :1,
+                Noreg16           :1,
+                Noreg17           :1,
+                :14;
 } L9963E_MUX_BIST_FAILTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                VBAT_COMP_BIST_FAIL       :1,
-                VREG_COMP_BIST_FAIL       :1,
-                VCOM_COMP_BIST_FAIL       :1,
-                VTREF_COMP_BIST_FAIL      :1,
+    uint32_t    BIST_BAL_COMP_LS_FAIL     :7,
                 BIST_BAL_COMP_HS_FAIL     :7,
-                BIST_BAL_COMP_LS_FAIL     :7;
+                VTREF_COMP_BIST_FAIL      :1,
+                VCOM_COMP_BIST_FAIL       :1,
+                VREG_COMP_BIST_FAIL       :1,
+                VBAT_COMP_BIST_FAIL       :1,
+                :14;
 } L9963E_BIST_COMPTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17            :1,
-                Noreg16            :1,
-                Noreg15            :1,
+    uint32_t    OPEN_BIST_FAIL     :14,
                 Noreg14            :1,
-                OPEN_BIST_FAIL     :14;
+                Noreg15            :1,
+                Noreg16            :1,
+                Noreg17            :1,
+                :14;
 } L9963E_OPEN_BIST_FAILTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                GPO9short           :1,
-                GPO8short           :1,
-                GPO7short           :1,
-                GPO6short           :1,
-                GPO5short           :1,
-                GPO4short           :1,
-                GPO3short           :1,
-                Noreg10             :1,
-                Noreg9              :1,
-                Noreg8              :1,
+    uint32_t    GPIO_BIST_FAIL      :7,
                 VTREF_BIST_FAIL     :1,
-                GPIO_BIST_FAIL      :7;
+                Noreg8              :1,
+                Noreg9              :1,
+                Noreg10             :1,
+                GPO3short           :1,
+                GPO4short           :1,
+                GPO5short           :1,
+                GPO6short           :1,
+                GPO7short           :1,
+                GPO8short           :1,
+                GPO9short           :1,
+                :14;
 } L9963E_GPIO_BIST_FAILTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17         :1,
+    uint32_t    VTREF_MEAS      :16,
                 d_rdy_vtref     :1,
-                VTREF_MEAS      :16;
+                Noreg17         :1,
+                :14;
 } L9963E_VTREFTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17         :1,
+    uint32_t    NVM_WR_15_0     :16,
                 Noreg16         :1,
-                NVM_WR_15_0     :16;
+                Noreg17         :1,
+                :14;
 } L9963E_NVM_WR_1TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17          :1,
+    uint32_t    NVM_WR_31_16     :16,
                 Noreg16          :1,
-                NVM_WR_31_16     :16;
+                Noreg17          :1,
+                :14;
 } L9963E_NVM_WR_2TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17          :1,
+    uint32_t    NVM_WR_47_32     :16,
                 Noreg16          :1,
-                NVM_WR_47_32     :16;
+                Noreg17          :1,
+                :14;
 } L9963E_NVM_WR_3TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17          :1,
+    uint32_t    NVM_WR_63_48     :16,
                 Noreg16          :1,
-                NVM_WR_63_48     :16;
+                Noreg17          :1,
+                :14;
 } L9963E_NVM_WR_4TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17          :1,
+    uint32_t    NVM_WR_79_64     :16,
                 Noreg16          :1,
-                NVM_WR_79_64     :16;
+                Noreg17          :1,
+                :14;
 } L9963E_NVM_WR_5TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17          :1,
+    uint32_t    NVM_WR_95_80     :16,
                 Noreg16          :1,
-                NVM_WR_95_80     :16;
+                Noreg17          :1,
+                :14;
 } L9963E_NVM_WR_6TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17           :1,
+    uint32_t    NVM_WR_111_96     :16,
                 Noreg16           :1,
-                NVM_WR_111_96     :16;
+                Noreg17           :1,
+                :14;
 } L9963E_NVM_WR_7TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17         :1,
+    uint32_t    NVM_RD_15_0     :16,
                 Noreg16         :1,
-                NVM_RD_15_0     :16;
+                Noreg17         :1,
+                :14;
 } L9963E_NVM_RD_1TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17          :1,
+    uint32_t    NVM_RD_31_16     :16,
                 Noreg16          :1,
-                NVM_RD_31_16     :16;
+                Noreg17          :1,
+                :14;
 } L9963E_NVM_RD_2TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17          :1,
+    uint32_t    NVM_RD_47_32     :16,
                 Noreg16          :1,
-                NVM_RD_47_32     :16;
+                Noreg17          :1,
+                :14;
 } L9963E_NVM_RD_3TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17          :1,
+    uint32_t    NVM_RD_63_48     :16,
                 Noreg16          :1,
-                NVM_RD_63_48     :16;
+                Noreg17          :1,
+                :14;
 } L9963E_NVM_RD_4TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17          :1,
+    uint32_t    NVM_RD_79_64     :16,
                 Noreg16          :1,
-                NVM_RD_79_64     :16;
+                Noreg17          :1,
+                :14;
 } L9963E_NVM_RD_5TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17          :1,
+    uint32_t    NVM_RD_95_80     :16,
                 Noreg16          :1,
-                NVM_RD_95_80     :16;
+                Noreg17          :1,
+                :14;
 } L9963E_NVM_RD_6TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17           :1,
+    uint32_t    NVM_RD_111_96     :16,
                 Noreg16           :1,
-                NVM_RD_111_96     :16;
+                Noreg17           :1,
+                :14;
 } L9963E_NVM_RD_7TypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                Noreg17         :1,
-                Noreg16         :1,
-                Noreg15         :1,
-                Noreg14         :1,
-                Noreg13         :1,
-                Noreg12         :1,
-                NVM_WR_BUSY     :1,
-                NVM_OPER        :2,
+    uint32_t    NVM_CNTR        :8,
                 NVM_PROGRAM     :1,
-                NVM_CNTR        :8;
+                NVM_OPER        :2,
+                NVM_WR_BUSY     :1,
+                Noreg12         :1,
+                Noreg13         :1,
+                Noreg14         :1,
+                Noreg15         :1,
+                Noreg16         :1,
+                Noreg17         :1,
+                :14;
 } L9963E_NVM_CMD_CNTRTypeDef;
 
 typedef struct {
-    uint32_t    :14,
-                NVM_UNLOCK_START     :18;
+    uint32_t    NVM_UNLOCK_START     :18,
+                :14;
 } L9963E_NVM_UNLCK_PRGTypeDef;
 
 

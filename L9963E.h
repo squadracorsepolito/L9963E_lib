@@ -41,27 +41,27 @@ extern L9963E_DataParamTypeDef L9963E_DATA;
 extern L9963E_DataParamTypeDef L9963E_CRC;
 
 struct L9963E_CmdStruct {
-        uint64_t        :24 ,
-                        pa :1,
-                        rw_burst :1,
-                        devid :5,
-                        addr :7,
+        uint64_t        crc :6,
+                        data: 18,
                         gsw :2,
-                        data :18,
-                        crc :6;
+                        addr :7,
+                        devid :5,
+                        rw_burst :1,
+                        pa :1,
+                        :24;
 };
 typedef struct L9963E_CmdStruct L9963E_CmdTypeDef;
 
 struct L9963E_HandleStruct {
         SPI_HandleTypeDef *hspi;
         GPIO_TypeDef *cs_port;
-        uint8_t cs_pin;
+        uint16_t cs_pin;
 
         GPIO_TypeDef *txen_port;
-        uint8_t txen_pin;
+        uint16_t txen_pin;
 
         GPIO_TypeDef *bne_port;
-        uint8_t bne_pin;
+        uint16_t bne_pin;
 };
 typedef struct L9963E_HandleStruct L9963E_HandleTypeDef;
 /**
@@ -77,7 +77,7 @@ typedef struct L9963E_HandleStruct L9963E_HandleTypeDef;
  * @param     bne_pin BNE pin
  * @return    HAL_OK on success, HAL_ERROR on failure
  */
-HAL_StatusTypeDef L9963E_init(L9963E_HandleTypeDef *handle, SPI_HandleTypeDef *hspi, GPIO_TypeDef *cs_port, uint8_t cs_pin, GPIO_TypeDef *txen_port, uint8_t txen_pin, GPIO_TypeDef *bne_port, uint8_t bne_pin);
+HAL_StatusTypeDef L9963E_init(L9963E_HandleTypeDef *handle, SPI_HandleTypeDef *hspi, GPIO_TypeDef *cs_port, uint16_t cs_pin, GPIO_TypeDef *txen_port, uint16_t txen_pin, GPIO_TypeDef *bne_port, uint16_t bne_pin);
 /**
  * @brief     Wakes up the IC 
  * 
