@@ -13,7 +13,7 @@
 
 #include "main.h"
 #include "registers.h"
-#include <inttypes.h>
+#include <stdint.h>
 
 #define L9963E_CS_HIGH(HANDLE)       HAL_GPIO_WritePin((HANDLE)->cs_port, (HANDLE)->cs_pin, GPIO_PIN_SET)
 #define L9963E_CS_LOW(HANDLE)        HAL_GPIO_WritePin((HANDLE)->cs_port, (HANDLE)->cs_pin, GPIO_PIN_RESET)

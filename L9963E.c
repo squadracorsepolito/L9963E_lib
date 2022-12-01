@@ -41,15 +41,62 @@ void main(void) {
         return;
 }
 */
+const uint16_t CrcCalc8bitLookupTab_B[] =
+{ 0x3123, 0x0005, 0x8474, 0x3143, 0x0007, 0x1809, 0xa800, 0x74e0, 0x0031,
+		0x9404, 0xe228, 0x3104, 0x0000, 0x18aa, 0xa801, 0x8603, 0x7d07, 0x0278,
+		0x74e5, 0x063f, 0x7d63, 0x2a14, 0x316b, 0x000b, 0x7a05, 0x00fe, 0x192a,
+		0x84fe, 0x7c8c, 0x2378, 0x7528, 0x063f, 0x1808, 0x8001, 0x00b0, 0x18ec,
+		0x0001, 0x7ce6, 0x5a78, 0x7ca3, 0x3214, 0x3165, 0x000b, 0x7a20, 0xfff0,
+		0x7c84, 0x50ae, 0x7d67, 0x2278, 0xe844, 0x1989, 0xb008, 0x8054, 0x3104,
+		0x0001, 0x18aa, 0xa801, 0x758c, 0x063f, 0x8663, 0x7cab, 0x4830, 0x7d07,
+		0x6630, 0x7d60, 0x3b78, 0x7c8b, 0x2378, 0x7c05, 0x3278, 0x4816, 0x74a7,
+		0x063f, 0x7ca3, 0x3a14, 0x8b55, 0x7a05, 0x0090, 0x1906, 0x8001, 0x18eb,
+		0x0001, 0x7506, 0x063f, 0x7ce7, 0x4830, 0x7d04, 0x30ae, 0x7c06, 0x5040,
+		0x7d00, 0x6630, 0x4407, 0x74e0, 0x063f, 0x7ca5, 0x0278, 0x7ce3, 0x2a14,
+		0x8b57, 0xe2ea, 0x1946, 0x8001, 0x754b, 0x063f, 0x7c84, 0x58ae, 0x7d08,
+		0x4830, 0x7c89, 0x6630, 0x7d2c, 0x4378, 0x7ca6, 0x6278, 0x74c7, 0x063f,
+		0x3143, 0x0008, 0x8a03, 0x180a, 0xa800, 0xe614, 0x192a, 0x84ff, 0x6386,
+		0x752c, 0x063f, 0x190c, 0x8001, 0x7d09, 0x03a6, 0x7c0b, 0x3a78, 0x7cc8,
+		0x3839, 0x6810, 0x6816, 0x7ce7, 0x589e, 0x7a20, 0xfff0, 0x8933, 0x7ce5,
+		0x1e30, 0x74a3, 0x063f, 0x0004, 0x7160, 0x0002, 0xe8d3, 0x7140, 0x0001,
+		0xe894 };
 
-uint8_t crc_table[] = { 0x14, 0xd, 0x26, 0x3f, 0x29, 0x30, 0x1b, 0x2,
-                        0x37, 0x2e, 0x5, 0x1c, 0xa, 0x13, 0x38, 0x21,
-                        0xb, 0x12, 0x39, 0x20, 0x36, 0x2f, 0x4, 0x1d,
-                        0x28, 0x31, 0x1a, 0x3, 0x15, 0xc, 0x27, 0x3e,
-                        0x2a, 0x33, 0x18, 0x1, 0x17, 0xe, 0x25, 0x3c,
-                        0x9, 0x10, 0x3b, 0x22, 0x34, 0x2d, 0x6, 0x1f,
-                        0x35, 0x2c, 0x7, 0x1e, 0x8, 0x11, 0x3a, 0x23,
-                        0x16, 0xf, 0x24, 0x3d, 0x2b, 0x32, 0x19, 0x0 };
+
+#define WORD_LEN 40UL
+#define CRC_LEN 6UL
+#define CRC_POLY (uint64_t)0x0000000000000059 /*L9301 CRC Poly:x^3+x^2+x+1*/
+#define CRC_SEED (uint64_t)0x0000000000000038
+#define CRC_INIT_SEED_MASK (CRC_SEED<<(WORD_LEN-CRC_LEN))
+#define CRC_INIT_MASK (CRC_POLY<<(WORD_LEN-CRC_LEN-1))
+#define FIRST_BIT_MASK ((uint64_t)1<<(WORD_LEN-1))  // 0x80000000
+#define CRC_LOWER_MASK ((uint8_t)(1<<CRC_LEN)-1) //0b111
+
+uint8_t CrcCompute_L9963(uint64_t InputWord)
+{
+	uint64_t TestBitMask;
+	uint64_t CRCMask;
+	uint64_t BitCount;
+	uint64_t LeftAlignedWord;
+
+	InputWord &= 0xFFFFFFFFFFFFFFC0; /* Clear the CRC bit in the data frame*/
+	LeftAlignedWord = InputWord ^ CRC_INIT_SEED_MASK;
+
+	TestBitMask = ((uint64_t) 1 << ( WORD_LEN - 1));
+	CRCMask = CRC_INIT_MASK; // 1111 <<
+	BitCount = ( WORD_LEN - CRC_LEN);
+	while (0 != BitCount--)
+	{
+		if (0 != (LeftAlignedWord & TestBitMask))
+		{
+			LeftAlignedWord ^= CRCMask;
+		} /* endif */
+		CRCMask >>= 1;
+		TestBitMask >>= 1;
+	} /* endwhile */
+
+	LeftAlignedWord &= (uint64_t)CRC_LOWER_MASK;
+	return LeftAlignedWord;
+}
 
 
 HAL_StatusTypeDef L9963E_init(L9963E_HandleTypeDef *handle, SPI_HandleTypeDef *hspi, GPIO_TypeDef *cs_port, uint16_t cs_pin, GPIO_TypeDef *txen_port, uint16_t txen_pin, GPIO_TypeDef *bne_port, uint16_t bne_pin) {
@@ -102,7 +149,10 @@ HAL_StatusTypeDef L9963E_wakeup(L9963E_HandleTypeDef *handle) {
 }
 
 HAL_StatusTypeDef _L9963E_reg_cmd(L9963E_HandleTypeDef *handle, uint8_t is_write, uint8_t device, L9963E_RegistersAddrTypeDef address, L9963E_RegisterUnionTypeDef *data) {
-    L9963E_CmdTypeDef cmd;
+    union {
+        L9963E_CmdTypeDef cmd;
+        uint64_t val;
+    } dat;
     HAL_StatusTypeDef errorcode = HAL_OK;
     uint32_t current_tick;
 
@@ -114,26 +164,29 @@ HAL_StatusTypeDef _L9963E_reg_cmd(L9963E_HandleTypeDef *handle, uint8_t is_write
         return HAL_ERROR;
     }
 
-    cmd.pa = 1;
-    cmd.rw_burst = is_write ? 1 : 0;
-    cmd.devid = device;
-    cmd.addr = address,
-    cmd.data = is_write ? data->generic : 0;
-    cmd.crc = L9963E_crc_calc(&cmd);
+    dat.cmd.pa = 1;
+    dat.cmd.rw_burst = is_write ? 1 : 0;
+    dat.cmd.devid = device;
+    dat.cmd.addr = address,
+    dat.cmd.data = data->generic;
+    dat.cmd.crc = CrcCompute_L9963(dat.val);
+
+    uint8_t d[5];
+    memcpy(d, (uint8_t*)&dat.val, 5);
 
     L9963E_CS_LOW(handle);
-    errorcode = HAL_SPI_Transmit(handle->hspi, (uint8_t*)&cmd, 5, 10);
+    errorcode = HAL_SPI_Transmit(handle->hspi, (uint8_t*)&dat.val, 5, 10);
     L9963E_CS_HIGH(handle);
 
     if(errorcode != HAL_OK) {
         return errorcode;
     }
 
-    cmd.addr = -1;
-    cmd.devid = -1;
+    dat.cmd.addr = -1;
+    dat.cmd.devid = -1;
 
     current_tick = HAL_GetTick();
-    while(cmd.addr != address && cmd.devid != device) {
+    while(dat.cmd.addr != address && dat.cmd.devid != device) {
         while(L9963E_BNE_READ(handle) == GPIO_PIN_RESET) {
             if(HAL_GetTick() - current_tick > 10) {
                 return HAL_TIMEOUT;
@@ -142,7 +195,7 @@ HAL_StatusTypeDef _L9963E_reg_cmd(L9963E_HandleTypeDef *handle, uint8_t is_write
         
         L9963E_TXEN_LOW(handle);
         L9963E_CS_LOW(handle);
-        errorcode = HAL_SPI_Receive(handle->hspi, (uint8_t*)&cmd, 5, 100);
+        errorcode = HAL_SPI_Receive(handle->hspi, (uint8_t*)&dat.val, 5, 100);
         L9963E_CS_HIGH(handle);
         L9963E_TXEN_HIGH(handle);
 
@@ -151,7 +204,7 @@ HAL_StatusTypeDef _L9963E_reg_cmd(L9963E_HandleTypeDef *handle, uint8_t is_write
         }
     }
     
-    data->generic = cmd.data;
+    data->generic = dat.cmd.data;
 
     return HAL_OK;
 }
