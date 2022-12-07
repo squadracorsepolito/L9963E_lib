@@ -58,15 +58,14 @@ uint8_t L9963E_crc_calc(uint64_t InputWord) {
     return LeftAlignedWord;
 }
 
-HAL_StatusTypeDef L9963E_init(
-    L9963E_HandleTypeDef *handle,
-    SPI_HandleTypeDef *hspi,
-    GPIO_TypeDef *cs_port,
-    uint16_t cs_pin,
-    GPIO_TypeDef *txen_port,
-    uint16_t txen_pin,
-    GPIO_TypeDef *bne_port,
-    uint16_t bne_pin) {
+HAL_StatusTypeDef L9963E_init(L9963E_HandleTypeDef *handle,
+                              SPI_HandleTypeDef *hspi,
+                              GPIO_TypeDef *cs_port,
+                              uint16_t cs_pin,
+                              GPIO_TypeDef *txen_port,
+                              uint16_t txen_pin,
+                              GPIO_TypeDef *bne_port,
+                              uint16_t bne_pin) {
     if (handle == NULL) {
         return HAL_ERROR;
     }
@@ -115,12 +114,11 @@ HAL_StatusTypeDef L9963E_wakeup(L9963E_HandleTypeDef *handle) {
     return errorcode;
 }
 
-HAL_StatusTypeDef _L9963E_reg_cmd(
-    L9963E_HandleTypeDef *handle,
-    uint8_t is_write,
-    uint8_t device,
-    L9963E_RegistersAddrTypeDef address,
-    L9963E_RegisterUnionTypeDef *data) {
+HAL_StatusTypeDef _L9963E_reg_cmd(L9963E_HandleTypeDef *handle,
+                                  uint8_t is_write,
+                                  uint8_t device,
+                                  L9963E_RegistersAddrTypeDef address,
+                                  L9963E_RegisterUnionTypeDef *data) {
     union L9963E_CmdUnion dat;
     HAL_StatusTypeDef errorcode = HAL_OK;
     uint32_t current_tick;
@@ -187,11 +185,10 @@ HAL_StatusTypeDef _L9963E_reg_cmd(
     return HAL_OK;
 }
 
-HAL_StatusTypeDef L9963E_reg_read(
-    L9963E_HandleTypeDef *handle,
-    uint8_t device,
-    L9963E_RegistersAddrTypeDef address,
-    L9963E_RegisterUnionTypeDef *data) {
+HAL_StatusTypeDef L9963E_reg_read(L9963E_HandleTypeDef *handle,
+                                  uint8_t device,
+                                  L9963E_RegistersAddrTypeDef address,
+                                  L9963E_RegisterUnionTypeDef *data) {
     if (device == 0) {
         return HAL_ERROR;
     }
@@ -199,10 +196,9 @@ HAL_StatusTypeDef L9963E_reg_read(
     return _L9963E_reg_cmd(handle, 0, device, address, data);
 }
 
-HAL_StatusTypeDef L9963E_reg_write(
-    L9963E_HandleTypeDef *handle,
-    uint8_t device,
-    L9963E_RegistersAddrTypeDef address,
-    L9963E_RegisterUnionTypeDef *data) {
+HAL_StatusTypeDef L9963E_reg_write(L9963E_HandleTypeDef *handle,
+                                   uint8_t device,
+                                   L9963E_RegistersAddrTypeDef address,
+                                   L9963E_RegisterUnionTypeDef *data) {
     return _L9963E_reg_cmd(handle, 1, device, address, data);
 }
