@@ -101,14 +101,14 @@ HAL_StatusTypeDef L9963E_init(L9963E_HandleTypeDef *handle,
 }
 
 HAL_StatusTypeDef L9963E_wakeup(L9963E_HandleTypeDef *handle) {
-    uint8_t dummy[5];
-    HAL_StatusTypeDef errorcode = HAL_OK;
+    static const uint8_t dummy[5] = {0x55, 0x55, 0x55, 0x55, 0x55};
+    HAL_StatusTypeDef errorcode   = HAL_OK;
 
     if (handle == NULL) {
         return HAL_ERROR;
     }
     L9963E_CS_LOW(handle);
-    errorcode = HAL_SPI_Transmit(handle->hspi, dummy, sizeof(dummy), 10);
+    errorcode = HAL_SPI_Transmit(handle->hspi, (uint8_t *)dummy, sizeof(dummy), 10);
     L9963E_CS_HIGH(handle);
 
     return errorcode;
@@ -144,8 +144,10 @@ HAL_StatusTypeDef _L9963E_reg_cmd(L9963E_HandleTypeDef *handle,
     d[3] = *((uint8_t *)&dat.val + 1);
     d[4] = *((uint8_t *)&dat.val + 0);
 
+    L9963E_TXEN_HIGH(handle);
     L9963E_CS_LOW(handle);
     errorcode = HAL_SPI_Transmit(handle->hspi, d, 5, 10);
+    L9963E_TXEN_LOW(handle);
     L9963E_CS_HIGH(handle);
 
     if (errorcode != HAL_OK) {
@@ -157,13 +159,14 @@ HAL_StatusTypeDef _L9963E_reg_cmd(L9963E_HandleTypeDef *handle,
 
     current_tick = HAL_GetTick();
     while (dat.cmd.addr != address && dat.cmd.devid != device) {
+        L9963E_TXEN_LOW(handle);
         while (L9963E_BNE_READ(handle) == GPIO_PIN_RESET) {
             if (HAL_GetTick() - current_tick > 10) {
+                L9963E_TXEN_HIGH(handle);
                 return HAL_TIMEOUT;
             }
         }
 
-        L9963E_TXEN_LOW(handle);
         L9963E_CS_LOW(handle);
         errorcode = HAL_SPI_Receive(handle->hspi, d, 5, 100);
         L9963E_CS_HIGH(handle);
