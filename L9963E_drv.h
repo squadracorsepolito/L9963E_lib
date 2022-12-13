@@ -11,6 +11,7 @@
 #ifndef L9963E_DRV_H
 #define L9963E_DRV_H
 
+#include "L9963E_status.h"
 #include "main.h"
 #include "registers.h"
 
@@ -59,21 +60,21 @@ typedef struct L9963E_DRV_HandleStruct L9963E_DRV_HandleTypeDef;
  * @param     bne_pin BNE pin
  * @return    HAL_OK on success, HAL_ERROR on failure
  */
-HAL_StatusTypeDef L9963E_DRV_init(L9963E_DRV_HandleTypeDef *handle,
-                                  SPI_HandleTypeDef *hspi,
-                                  GPIO_TypeDef *cs_port,
-                                  uint16_t cs_pin,
-                                  GPIO_TypeDef *txen_port,
-                                  uint16_t txen_pin,
-                                  GPIO_TypeDef *bne_port,
-                                  uint16_t bne_pin);
+L9963E_StatusTypeDef L9963E_DRV_init(L9963E_DRV_HandleTypeDef *handle,
+                                     SPI_HandleTypeDef *hspi,
+                                     GPIO_TypeDef *cs_port,
+                                     uint16_t cs_pin,
+                                     GPIO_TypeDef *txen_port,
+                                     uint16_t txen_pin,
+                                     GPIO_TypeDef *bne_port,
+                                     uint16_t bne_pin);
 /**
  * @brief     Wakes up the IC 
  * 
  * @param     handle Reference to the handle
  * @return    HAL_OK on success, HAL_ERROR on failure
  */
-HAL_StatusTypeDef L9963E_DRV_wakeup(L9963E_DRV_HandleTypeDef *handle);
+L9963E_StatusTypeDef L9963E_DRV_wakeup(L9963E_DRV_HandleTypeDef *handle);
 /**
  * @brief     Reads a register
  * 
@@ -83,10 +84,10 @@ HAL_StatusTypeDef L9963E_DRV_wakeup(L9963E_DRV_HandleTypeDef *handle);
  * @param     data Reference to the structure to be populated with the read data
  * @return    HAL_OK on success, HAL_ERROR on failure
  */
-HAL_StatusTypeDef L9963E_DRV_reg_read(L9963E_DRV_HandleTypeDef *handle,
-                                      uint8_t device,
-                                      L9963E_RegistersAddrTypeDef address,
-                                      L9963E_RegisterUnionTypeDef *data);
+L9963E_StatusTypeDef L9963E_DRV_reg_read(L9963E_DRV_HandleTypeDef *handle,
+                                         uint8_t device,
+                                         L9963E_RegistersAddrTypeDef address,
+                                         L9963E_RegisterUnionTypeDef *data);
 /**
  * @brief     Writes a register
  * 
@@ -96,10 +97,10 @@ HAL_StatusTypeDef L9963E_DRV_reg_read(L9963E_DRV_HandleTypeDef *handle,
  * @param     data Data to be written
  * @return    HAL_OK on success, HAL_ERROR on failure
  */
-HAL_StatusTypeDef L9963E_DRV_reg_write(L9963E_DRV_HandleTypeDef *handle,
-                                       uint8_t device,
-                                       L9963E_RegistersAddrTypeDef address,
-                                       L9963E_RegisterUnionTypeDef *data);
+L9963E_StatusTypeDef L9963E_DRV_reg_write(L9963E_DRV_HandleTypeDef *handle,
+                                          uint8_t device,
+                                          L9963E_RegistersAddrTypeDef address,
+                                          L9963E_RegisterUnionTypeDef *data);
 /**
  * @brief     Calculates the CRC6
  * 

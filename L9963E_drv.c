@@ -58,32 +58,32 @@ uint8_t L9963E_DRV_crc_calc(uint64_t InputWord) {
     return LeftAlignedWord;
 }
 
-HAL_StatusTypeDef L9963E_DRV_init(L9963E_DRV_HandleTypeDef *handle,
-                                  SPI_HandleTypeDef *hspi,
-                                  GPIO_TypeDef *cs_port,
-                                  uint16_t cs_pin,
-                                  GPIO_TypeDef *txen_port,
-                                  uint16_t txen_pin,
-                                  GPIO_TypeDef *bne_port,
-                                  uint16_t bne_pin) {
+L9963E_StatusTypeDef L9963E_DRV_init(L9963E_DRV_HandleTypeDef *handle,
+                                     SPI_HandleTypeDef *hspi,
+                                     GPIO_TypeDef *cs_port,
+                                     uint16_t cs_pin,
+                                     GPIO_TypeDef *txen_port,
+                                     uint16_t txen_pin,
+                                     GPIO_TypeDef *bne_port,
+                                     uint16_t bne_pin) {
     if (handle == NULL) {
-        return HAL_ERROR;
+        return L9963E_ERROR;
     }
 
     if (hspi == NULL) {
-        return HAL_ERROR;
+        return L9963E_ERROR;
     }
 
     if (cs_port == NULL) {
-        return HAL_ERROR;
+        return L9963E_ERROR;
     }
 
     if (txen_port == NULL) {
-        return HAL_ERROR;
+        return L9963E_ERROR;
     }
 
     if (bne_port == NULL) {
-        return HAL_ERROR;
+        return L9963E_ERROR;
     }
 
     handle->hspi      = hspi;
@@ -97,15 +97,15 @@ HAL_StatusTypeDef L9963E_DRV_init(L9963E_DRV_HandleTypeDef *handle,
     L9963E_DRV_CS_HIGH(handle);
     L9963E_DRV_TXEN_HIGH(handle);
 
-    return HAL_OK;
+    return L9963E_OK;
 }
 
-HAL_StatusTypeDef L9963E_DRV_wakeup(L9963E_DRV_HandleTypeDef *handle) {
-    static const uint8_t dummy[5] = {0x55, 0x55, 0x55, 0x55, 0x55};
-    HAL_StatusTypeDef errorcode   = HAL_OK;
+L9963E_StatusTypeDef L9963E_DRV_wakeup(L9963E_DRV_HandleTypeDef *handle) {
+    static const uint8_t dummy[5]  = {0x55, 0x55, 0x55, 0x55, 0x55};
+    L9963E_StatusTypeDef errorcode = L9963E_OK;
 
     if (handle == NULL) {
-        return HAL_ERROR;
+        return L9963E_ERROR;
     }
     L9963E_DRV_CS_LOW(handle);
     errorcode = HAL_SPI_Transmit(handle->hspi, (uint8_t *)dummy, sizeof(dummy), 10);
@@ -114,22 +114,22 @@ HAL_StatusTypeDef L9963E_DRV_wakeup(L9963E_DRV_HandleTypeDef *handle) {
     return errorcode;
 }
 
-HAL_StatusTypeDef _L9963E_DRV_reg_cmd(L9963E_DRV_HandleTypeDef *handle,
-                                      uint8_t is_write,
-                                      uint8_t device,
-                                      L9963E_RegistersAddrTypeDef address,
-                                      L9963E_RegisterUnionTypeDef *data) {
+L9963E_StatusTypeDef _L9963E_DRV_reg_cmd(L9963E_DRV_HandleTypeDef *handle,
+                                         uint8_t is_write,
+                                         uint8_t device,
+                                         L9963E_RegistersAddrTypeDef address,
+                                         L9963E_RegisterUnionTypeDef *data) {
     union L9963E_DRV_CmdUnion dat;
-    HAL_StatusTypeDef errorcode = HAL_OK;
+    L9963E_StatusTypeDef errorcode = L9963E_OK;
     uint32_t current_tick;
     uint8_t d[5];
 
     if (handle == NULL) {
-        return HAL_ERROR;
+        return L9963E_ERROR;
     }
 
     if (data == NULL) {
-        return HAL_ERROR;
+        return L9963E_ERROR;
     }
 
     dat.cmd.pa       = 1;
@@ -150,7 +150,7 @@ HAL_StatusTypeDef _L9963E_DRV_reg_cmd(L9963E_DRV_HandleTypeDef *handle,
     L9963E_DRV_TXEN_LOW(handle);
     L9963E_DRV_CS_HIGH(handle);
 
-    if (errorcode != HAL_OK) {
+    if (errorcode != L9963E_OK) {
         return errorcode;
     }
 
@@ -163,7 +163,7 @@ HAL_StatusTypeDef _L9963E_DRV_reg_cmd(L9963E_DRV_HandleTypeDef *handle,
         while (L9963E_DRV_BNE_READ(handle) == GPIO_PIN_RESET) {
             if (HAL_GetTick() - current_tick > 10) {
                 L9963E_DRV_TXEN_HIGH(handle);
-                return HAL_TIMEOUT;
+                return L9963E_TIMEOUT;
             }
         }
 
@@ -178,30 +178,30 @@ HAL_StatusTypeDef _L9963E_DRV_reg_cmd(L9963E_DRV_HandleTypeDef *handle,
         *((uint8_t *)&dat.val + 1) = d[3];
         *((uint8_t *)&dat.val + 0) = d[4];
 
-        if (errorcode != HAL_OK) {
+        if (errorcode != L9963E_OK) {
             return errorcode;
         }
     }
 
     data->generic = dat.cmd.data;
 
-    return HAL_OK;
+    return L9963E_OK;
 }
 
-HAL_StatusTypeDef L9963E_DRV_reg_read(L9963E_DRV_HandleTypeDef *handle,
-                                      uint8_t device,
-                                      L9963E_RegistersAddrTypeDef address,
-                                      L9963E_RegisterUnionTypeDef *data) {
+L9963E_StatusTypeDef L9963E_DRV_reg_read(L9963E_DRV_HandleTypeDef *handle,
+                                         uint8_t device,
+                                         L9963E_RegistersAddrTypeDef address,
+                                         L9963E_RegisterUnionTypeDef *data) {
     if (device == 0) {
-        return HAL_ERROR;
+        return L9963E_ERROR;
     }
 
     return _L9963E_DRV_reg_cmd(handle, 0, device, address, data);
 }
 
-HAL_StatusTypeDef L9963E_DRV_reg_write(L9963E_DRV_HandleTypeDef *handle,
-                                       uint8_t device,
-                                       L9963E_RegistersAddrTypeDef address,
-                                       L9963E_RegisterUnionTypeDef *data) {
+L9963E_StatusTypeDef L9963E_DRV_reg_write(L9963E_DRV_HandleTypeDef *handle,
+                                          uint8_t device,
+                                          L9963E_RegistersAddrTypeDef address,
+                                          L9963E_RegisterUnionTypeDef *data) {
     return _L9963E_DRV_reg_cmd(handle, 1, device, address, data);
 }
