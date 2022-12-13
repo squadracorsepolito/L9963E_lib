@@ -45,6 +45,9 @@ struct L9963E_DRV_HandleStruct {
 
     GPIO_TypeDef *bne_port;
     uint16_t bne_pin;
+
+    GPIO_TypeDef *isofreq_port;
+    uint16_t isofreq_pin;
 };
 typedef struct L9963E_DRV_HandleStruct L9963E_DRV_HandleTypeDef;
 /**
@@ -67,7 +70,9 @@ L9963E_StatusTypeDef L9963E_DRV_init(L9963E_DRV_HandleTypeDef *handle,
                                      GPIO_TypeDef *txen_port,
                                      uint16_t txen_pin,
                                      GPIO_TypeDef *bne_port,
-                                     uint16_t bne_pin);
+                                     uint16_t bne_pin,
+                                     GPIO_TypeDef *isofreq_port,
+                                     uint16_t isofreq_pin);
 /**
  * @brief     Wakes up the IC 
  * 

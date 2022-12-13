@@ -65,7 +65,9 @@ L9963E_StatusTypeDef L9963E_DRV_init(L9963E_DRV_HandleTypeDef *handle,
                                      GPIO_TypeDef *txen_port,
                                      uint16_t txen_pin,
                                      GPIO_TypeDef *bne_port,
-                                     uint16_t bne_pin) {
+                                     uint16_t bne_pin,
+                                     GPIO_TypeDef *isofreq_port,
+                                     uint16_t isofreq_pin) {
     if (handle == NULL) {
         return L9963E_ERROR;
     }
@@ -86,13 +88,19 @@ L9963E_StatusTypeDef L9963E_DRV_init(L9963E_DRV_HandleTypeDef *handle,
         return L9963E_ERROR;
     }
 
-    handle->hspi      = hspi;
-    handle->cs_port   = cs_port;
-    handle->cs_pin    = cs_pin;
-    handle->txen_port = txen_port;
-    handle->txen_pin  = txen_pin;
-    handle->bne_port  = bne_port;
-    handle->bne_pin   = bne_pin;
+    if (isofreq_port == NULL) {
+        return L9963E_ERROR;
+    }
+
+    handle->hspi         = hspi;
+    handle->cs_port      = cs_port;
+    handle->cs_pin       = cs_pin;
+    handle->txen_port    = txen_port;
+    handle->txen_pin     = txen_pin;
+    handle->bne_port     = bne_port;
+    handle->bne_pin      = bne_pin;
+    handle->isofreq_port = isofreq_port;
+    handle->isofreq_pin  = isofreq_pin;
 
     L9963E_DRV_CS_HIGH(handle);
     L9963E_DRV_TXEN_HIGH(handle);
@@ -156,12 +164,13 @@ L9963E_StatusTypeDef _L9963E_DRV_reg_cmd(L9963E_DRV_HandleTypeDef *handle,
 
     dat.cmd.addr  = -1;
     dat.cmd.devid = -1;
+    dat.cmd.data  = 0;
 
     current_tick = HAL_GetTick();
     while (dat.cmd.addr != address && dat.cmd.devid != device) {
         L9963E_DRV_TXEN_LOW(handle);
         while (L9963E_DRV_BNE_READ(handle) == GPIO_PIN_RESET) {
-            if (HAL_GetTick() - current_tick > 10) {
+            if (HAL_GetTick() - current_tick > 3) {
                 L9963E_DRV_TXEN_HIGH(handle);
                 return L9963E_TIMEOUT;
             }
