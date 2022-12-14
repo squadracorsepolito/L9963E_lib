@@ -144,8 +144,9 @@ L9963E_StatusTypeDef _L9963E_DRV_reg_cmd(L9963E_DRV_HandleTypeDef *handle,
     dat.cmd.pa       = 1;
     dat.cmd.rw_burst = is_write ? 1 : 0;
     dat.cmd.devid    = device;
-    dat.cmd.addr = address, dat.cmd.data = data->generic;
-    dat.cmd.crc = L9963E_DRV_crc_calc(dat.val);
+    dat.cmd.addr     = address;
+    dat.cmd.data     = data->generic;
+    dat.cmd.crc      = L9963E_DRV_crc_calc(dat.val);
 
     d[0] = *((uint8_t *)&dat.val + 4);
     d[1] = *((uint8_t *)&dat.val + 3);
@@ -190,6 +191,10 @@ L9963E_StatusTypeDef _L9963E_DRV_reg_cmd(L9963E_DRV_HandleTypeDef *handle,
 
         if (errorcode != L9963E_OK) {
             return errorcode;
+        }
+
+        if (dat.cmd.crc != L9963E_DRV_crc_calc(dat.val)) {
+            return L9963E_CRC_ERROR;
         }
     }
 
