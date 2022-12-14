@@ -11,6 +11,7 @@
 #ifndef L9963E_DRV_H
 #define L9963E_DRV_H
 
+#include "L9963E_burst.h"
 #include "L9963E_registers.h"
 #include "L9963E_status.h"
 #include "main.h"
