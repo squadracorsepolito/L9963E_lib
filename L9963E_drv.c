@@ -104,6 +104,7 @@ L9963E_StatusTypeDef L9963E_DRV_init(L9963E_DRV_HandleTypeDef *handle,
 
     L9963E_DRV_CS_HIGH(handle);
     L9963E_DRV_TXEN_HIGH(handle);
+    L9963E_DRV_ISOFREQ_LOW(handle);
 
     return L9963E_OK;
 }
@@ -164,13 +165,13 @@ L9963E_StatusTypeDef _L9963E_DRV_reg_cmd(L9963E_DRV_HandleTypeDef *handle,
 
     dat.cmd.addr  = -1;
     dat.cmd.devid = -1;
-    dat.cmd.data  = 0;
+    dat.cmd.data  = -1;
 
     current_tick = HAL_GetTick();
     while (dat.cmd.addr != address && dat.cmd.devid != device) {
         L9963E_DRV_TXEN_LOW(handle);
         while (L9963E_DRV_BNE_READ(handle) == GPIO_PIN_RESET) {
-            if (HAL_GetTick() - current_tick > 3) {
+            if (HAL_GetTick() - current_tick >= 1) {
                 L9963E_DRV_TXEN_HIGH(handle);
                 return L9963E_TIMEOUT;
             }

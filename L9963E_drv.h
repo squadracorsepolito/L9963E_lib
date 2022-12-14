@@ -23,6 +23,9 @@
 #define L9963E_DRV_TXEN_HIGH(HANDLE) HAL_GPIO_WritePin((HANDLE)->txen_port, (HANDLE)->txen_pin, GPIO_PIN_SET)
 #define L9963E_DRV_TXEN_LOW(HANDLE)  HAL_GPIO_WritePin((HANDLE)->txen_port, (HANDLE)->txen_pin, GPIO_PIN_RESET)
 
+#define L9963E_DRV_ISOFREQ_HIGH(HANDLE) HAL_GPIO_WritePin((HANDLE)->isofreq_port, (HANDLE)->isofreq_pin, GPIO_PIN_SET)
+#define L9963E_DRV_ISOFREQ_LOW(HANDLE)  HAL_GPIO_WritePin((HANDLE)->isofreq_port, (HANDLE)->isofreq_pin, GPIO_PIN_RESET)
+
 #define L9963E_DRV_BNE_READ(HANDLE) HAL_GPIO_ReadPin((HANDLE)->bne_port, (HANDLE)->bne_pin)
 
 #define L9963E_DRV_CMD_MASK 0xFFFFFFFFFF
