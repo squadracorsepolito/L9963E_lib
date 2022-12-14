@@ -20,9 +20,7 @@ L9963E_StatusTypeDef L9963E_init(L9963E_HandleTypeDef *handle,
                                  uint16_t bne_pin,
                                  GPIO_TypeDef *isofreq_port,
                                  uint16_t isofreq_pin,
-                                 uint8_t slave_n,
-                                 uint8_t is_dual_ring,
-                                 uint8_t out_res_tx_iso) {
+                                 uint8_t slave_n) {
     if (handle == NULL) {
         return L9963E_ERROR;
     }
@@ -31,9 +29,7 @@ L9963E_StatusTypeDef L9963E_init(L9963E_HandleTypeDef *handle,
         return L9963E_ERROR;
     }
 
-    handle->slave_n        = slave_n;
-    handle->is_dual_ring   = is_dual_ring;
-    handle->out_res_tx_iso = out_res_tx_iso;
+    handle->slave_n = slave_n;
 
     return L9963E_DRV_init(&(handle->drv_handle),
                            hspi,
@@ -47,7 +43,11 @@ L9963E_StatusTypeDef L9963E_init(L9963E_HandleTypeDef *handle,
                            isofreq_pin);
 }
 
-L9963E_StatusTypeDef L9963E_addressing_procedure(L9963E_HandleTypeDef *handle) {
+L9963E_StatusTypeDef L9963E_addressing_procedure(L9963E_HandleTypeDef *handle,
+                                                 uint8_t iso_freq_sel,
+                                                 uint8_t is_dual_ring,
+                                                 uint8_t out_res_tx_iso,
+                                                 uint8_t lock_isofreq) {
     L9963E_RegisterUnionTypeDef write_reg;
     L9963E_RegisterUnionTypeDef read_reg;
 
@@ -83,10 +83,13 @@ L9963E_StatusTypeDef L9963E_addressing_procedure(L9963E_HandleTypeDef *handle) {
 
     write_reg.generic                    = 0;
     write_reg.DEV_GEN_CFG.isotx_en_h     = 0b1;
-    write_reg.DEV_GEN_CFG.out_res_tx_iso = handle->out_res_tx_iso;
-    write_reg.DEV_GEN_CFG.iso_freq_sel   = 0b11;
+    write_reg.DEV_GEN_CFG.out_res_tx_iso = out_res_tx_iso;
+    write_reg.DEV_GEN_CFG.iso_freq_sel   = iso_freq_sel;
 
-    HAL_GPIO_WritePin(handle->drv_handle.isofreq_port, handle->drv_handle.isofreq_pin, GPIO_PIN_SET);
+    if (iso_freq_sel == 0b11)
+        L9963E_DRV_ISOFREQ_HIGH(&(handle->drv_handle));
+    else
+        L9963E_DRV_ISOFREQ_LOW(&(handle->drv_handle));
 
     L9963E_DRV_reg_write(&(handle->drv_handle), 0, DEV_GEN_CFG, &write_reg);
 
@@ -97,12 +100,12 @@ L9963E_StatusTypeDef L9963E_addressing_procedure(L9963E_HandleTypeDef *handle) {
 
     L9963E_DRV_reg_write(&(handle->drv_handle), handle->slave_n, DEV_GEN_CFG, &write_reg);
 
-    write_reg.generic                 = 0;
-    write_reg.Bal_3.Lock_isoh_isofreq = 1;
+    if (lock_isofreq == 1) {
+        write_reg.generic                 = 0;
+        write_reg.Bal_3.Lock_isoh_isofreq = 1;
 
-    L9963E_DRV_reg_write(&(handle->drv_handle), 0, Bal_3, &write_reg);
-
-    //not sending last broadcast command because it would override farthest unit bit
+        L9963E_DRV_reg_write(&(handle->drv_handle), 0, Bal_3, &write_reg);
+    }
 
     return L9963E_OK;
 }

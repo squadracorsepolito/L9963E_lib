@@ -32,9 +32,11 @@ L9963E_StatusTypeDef L9963E_init(L9963E_HandleTypeDef *handle,
                                  uint16_t bne_pin,
                                  GPIO_TypeDef *isofreq_port,
                                  uint16_t isofreq_pin,
-                                 uint8_t slave_n,
-                                 uint8_t is_dual_ring,
-                                 uint8_t out_res_tx_iso);
-L9963E_StatusTypeDef L9963E_addressing_procedure(L9963E_HandleTypeDef *handle);
+                                 uint8_t slave_n);
+L9963E_StatusTypeDef L9963E_addressing_procedure(L9963E_HandleTypeDef *handle,
+                                                 uint8_t iso_freq_sel,
+                                                 uint8_t is_dual_ring,
+                                                 uint8_t out_res_tx_iso,
+                                                 uint8_t lock_isofreq);
 
 #endif  // L9963E_H
