@@ -38,7 +38,7 @@ typedef union {
     } frames;
 } L9963E_0x78BurstTypeDef;
 
-typedef struct {
+typedef union {
     uint32_t generics[L9963E_BURST_0x7A_LEN];
     struct {
         struct {
@@ -111,7 +111,7 @@ typedef struct {
     } frames;
 } L9963E_0x7ABurstTypeDef;
 
-typedef struct {
+typedef union {
     uint32_t generics[L9963E_BURST_0x7B_LEN];
     struct {
         struct {
