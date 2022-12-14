@@ -62,4 +62,4 @@ args = {
 
 cwd = Path.cwd()
 
-(cwd / "registers.h").write_text(header.render(**args))
+(cwd / "L9963E_registers.h").write_text(header.render(**args))
