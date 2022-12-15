@@ -96,7 +96,8 @@ L9963E_StatusTypeDef L9963E_DRV_wakeup(L9963E_DRV_HandleTypeDef *handle);
 L9963E_StatusTypeDef L9963E_DRV_reg_read(L9963E_DRV_HandleTypeDef *handle,
                                          uint8_t device,
                                          L9963E_RegistersAddrTypeDef address,
-                                         L9963E_RegisterUnionTypeDef *data);
+                                         L9963E_RegisterUnionTypeDef *data,
+                                         uint8_t timeout);
 /**
  * @brief     Writes a register
  * 
@@ -109,7 +110,8 @@ L9963E_StatusTypeDef L9963E_DRV_reg_read(L9963E_DRV_HandleTypeDef *handle,
 L9963E_StatusTypeDef L9963E_DRV_reg_write(L9963E_DRV_HandleTypeDef *handle,
                                           uint8_t device,
                                           L9963E_RegistersAddrTypeDef address,
-                                          L9963E_RegisterUnionTypeDef *data);
+                                          L9963E_RegisterUnionTypeDef *data,
+                                          uint8_t timeout);
 /**
  * @brief     Calculates the CRC6
  * 
@@ -117,5 +119,12 @@ L9963E_StatusTypeDef L9963E_DRV_reg_write(L9963E_DRV_HandleTypeDef *handle,
  * @return    the calculated CRC6
  */
 uint8_t L9963E_DRV_crc_calc(uint64_t InputWord);
+
+L9963E_StatusTypeDef L9963E_DRV_burst_cmd(L9963E_DRV_HandleTypeDef *handle,
+                                          uint8_t device,
+                                          L9963E_BurstCmdTypeDef command,
+                                          L9963E_BurstUnionTypeDef *data,
+                                          uint8_t expected_frames_n,
+                                          uint8_t timeout);
 
 #endif  //L9963E_DRV_DRV_H

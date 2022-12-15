@@ -70,10 +70,10 @@ L9963E_StatusTypeDef L9963E_addressing_procedure(L9963E_HandleTypeDef *handle,
         write_reg.DEV_GEN_CFG.chip_ID      = x;
         write_reg.DEV_GEN_CFG.iso_freq_sel = 0b00;
 
-        L9963E_DRV_reg_write(&(handle->drv_handle), 0, DEV_GEN_CFG, &write_reg);
+        L9963E_DRV_reg_write(&(handle->drv_handle), 0, DEV_GEN_CFG, &write_reg, 1);
 
         //readback, if successful continue, else repeat the same cycle
-        if (L9963E_DRV_reg_read(&(handle->drv_handle), 0x1, DEV_GEN_CFG, &read_reg) == L9963E_OK &&
+        if (L9963E_DRV_reg_read(&(handle->drv_handle), 0x1, DEV_GEN_CFG, &read_reg, 1) == L9963E_OK &&
             read_reg.DEV_GEN_CFG.chip_ID == x) {
             tick = HAL_GetTick();
         } else {
@@ -91,20 +91,20 @@ L9963E_StatusTypeDef L9963E_addressing_procedure(L9963E_HandleTypeDef *handle,
     else
         L9963E_DRV_ISOFREQ_LOW(&(handle->drv_handle));
 
-    L9963E_DRV_reg_write(&(handle->drv_handle), 0, DEV_GEN_CFG, &write_reg);
+    L9963E_DRV_reg_write(&(handle->drv_handle), 0, DEV_GEN_CFG, &write_reg, 1);
 
     write_reg.DEV_GEN_CFG.Farthest_Unit = 0b1;
     if (!handle->is_dual_ring) {
         write_reg.DEV_GEN_CFG.isotx_en_h = 0;
     }
 
-    L9963E_DRV_reg_write(&(handle->drv_handle), handle->slave_n, DEV_GEN_CFG, &write_reg);
+    L9963E_DRV_reg_write(&(handle->drv_handle), handle->slave_n, DEV_GEN_CFG, &write_reg, 1);
 
     if (lock_isofreq == 1) {
         write_reg.generic                 = 0;
         write_reg.Bal_3.Lock_isoh_isofreq = 1;
 
-        L9963E_DRV_reg_write(&(handle->drv_handle), 0, Bal_3, &write_reg);
+        L9963E_DRV_reg_write(&(handle->drv_handle), 0, Bal_3, &write_reg, 1);
     }
 
     return L9963E_OK;
