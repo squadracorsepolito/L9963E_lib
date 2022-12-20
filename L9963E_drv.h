@@ -31,13 +31,13 @@
 
 #define L9963E_DRV_CMD_MASK 0xFFFFFFFFFF
 
-union L9963E_DRV_CmdUnion {
+union L9963E_DRV_FrameUnion {
     uint64_t val;
     struct {
         uint64_t crc : 6, data : 18, gsw : 2, addr : 7, devid : 5, rw_burst : 1, pa : 1, : 24;
     } cmd;
 };
-typedef union L9963E_DRV_CmdUnion L9963E_DRV_CmdTypeDef;
+typedef union L9963E_DRV_FrameUnion L9963E_DRV_CmdTypeDef;
 
 struct L9963E_DRV_HandleStruct {
     SPI_HandleTypeDef *hspi;
