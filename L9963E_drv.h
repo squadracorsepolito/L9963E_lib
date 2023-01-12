@@ -29,6 +29,8 @@
 
 #define L9963E_DRV_BNE_READ(HANDLE) HAL_GPIO_ReadPin((HANDLE)->bne_port, (HANDLE)->bne_pin)
 
+#define L9963E_DEVICE_BROADCAST 0x0U
+
 #define L9963E_DRV_CMD_MASK 0xFFFFFFFFFF
 
 union L9963E_DRV_FrameUnion {

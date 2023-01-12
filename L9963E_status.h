@@ -11,6 +11,12 @@
 #ifndef L9963E_STATUS_H
 #define L9963E_STATUS_H
 
-typedef enum { L9963E_OK = 0, L9963E_ERROR, L9963E_TIMEOUT, L9963E_CRC_ERROR } L9963E_StatusTypeDef;
+typedef enum {
+    L9963E_OK = 0,
+    L9963E_ERROR,
+    L9963E_TIMEOUT,
+    L9963E_CRC_ERROR,
+    L9963E_READBACK_ERROR
+} L9963E_StatusTypeDef;
 
 #endif  // L9963E_STATUS_H
