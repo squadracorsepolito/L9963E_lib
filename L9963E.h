@@ -22,6 +22,9 @@ struct L9963E_HandleStruct {
 };
 typedef struct L9963E_HandleStruct L9963E_HandleTypeDef;
 
+enum L9963E_CommTimeoutEnum { _32MS = 0b00, _256MS = 0b01, _1024MS = 0b10, _2048MS = 0b11 };
+typedef enum L9963E_CommTimeoutEnum L9963E_CommTimeoutTypeDef;
+
 L9963E_StatusTypeDef L9963E_init(L9963E_HandleTypeDef *handle,
                                  SPI_HandleTypeDef *hspi,
                                  GPIO_TypeDef *cs_port,
@@ -38,5 +41,11 @@ L9963E_StatusTypeDef L9963E_addressing_procedure(L9963E_HandleTypeDef *handle,
                                                  uint8_t is_dual_ring,
                                                  uint8_t out_res_tx_iso,
                                                  uint8_t lock_isofreq);
+L9963E_StatusTypeDef L9963E_setCommTimeout_Broadcast(L9963E_HandleTypeDef *handle,
+                                                     L9963E_CommTimeoutTypeDef commTimeout);
+L9963E_StatusTypeDef L9963E_setCommTimeout(L9963E_HandleTypeDef *handle,
+                                           L9963E_CommTimeoutTypeDef commTimeout,
+                                           uint8_t device,
+                                           uint8_t preserve_reg_value);
 
 #endif  // L9963E_H
