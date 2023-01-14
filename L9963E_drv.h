@@ -18,6 +18,10 @@
 
 #include <stdint.h>
 
+#ifndef L9963E_DEBUG
+#define L9963E_DEBUG 1
+#endif  //L9963E_DEBUG
+
 #define L9963E_DRV_CS_HIGH(HANDLE) HAL_GPIO_WritePin((HANDLE)->cs_port, (HANDLE)->cs_pin, GPIO_PIN_SET)
 #define L9963E_DRV_CS_LOW(HANDLE)  HAL_GPIO_WritePin((HANDLE)->cs_port, (HANDLE)->cs_pin, GPIO_PIN_RESET)
 

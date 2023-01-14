@@ -54,6 +54,7 @@ L9963E_StatusTypeDef L9963E_DRV_init(L9963E_DRV_HandleTypeDef *handle,
                                      uint16_t bne_pin,
                                      GPIO_TypeDef *isofreq_port,
                                      uint16_t isofreq_pin) {
+#if L9963E_DEBUG
     if (handle == NULL) {
         return L9963E_ERROR;
     }
@@ -77,6 +78,7 @@ L9963E_StatusTypeDef L9963E_DRV_init(L9963E_DRV_HandleTypeDef *handle,
     if (isofreq_port == NULL) {
         return L9963E_ERROR;
     }
+#endif
 
     handle->hspi         = hspi;
     handle->cs_port      = cs_port;
@@ -99,9 +101,12 @@ L9963E_StatusTypeDef L9963E_DRV_wakeup(L9963E_DRV_HandleTypeDef *handle) {
     static const uint8_t dummy[5]  = {0x55, 0x55, 0x55, 0x55, 0x55};
     L9963E_StatusTypeDef errorcode = L9963E_OK;
 
+#if L9963E_DEBUG
     if (handle == NULL) {
         return L9963E_ERROR;
     }
+#endif
+
     L9963E_DRV_CS_LOW(handle);
     errorcode = HAL_SPI_Transmit(handle->hspi, (uint8_t *)dummy, sizeof(dummy), 10);
     L9963E_DRV_CS_HIGH(handle);
@@ -204,6 +209,7 @@ L9963E_StatusTypeDef L9963E_DRV_burst_cmd(L9963E_DRV_HandleTypeDef *handle,
     uint32_t current_tick;
     uint8_t raw[5];
 
+#if L9963E_DEBUG
     if (handle == NULL) {
         return L9963E_ERROR;
     }
@@ -211,6 +217,7 @@ L9963E_StatusTypeDef L9963E_DRV_burst_cmd(L9963E_DRV_HandleTypeDef *handle,
     if (data == NULL) {
         return L9963E_ERROR;
     }
+#endif
 
     _L9963E_DRV_build_frame(raw, 1, 0, device, command, 0);
 
@@ -247,6 +254,7 @@ L9963E_StatusTypeDef _L9963E_DRV_reg_cmd(L9963E_DRV_HandleTypeDef *handle,
     L9963E_StatusTypeDef errorcode = L9963E_OK;
     uint8_t raw[5];
 
+#if L9963E_DEBUG
     if (handle == NULL) {
         return L9963E_ERROR;
     }
@@ -254,6 +262,7 @@ L9963E_StatusTypeDef _L9963E_DRV_reg_cmd(L9963E_DRV_HandleTypeDef *handle,
     if (data == NULL) {
         return L9963E_ERROR;
     }
+#endif
 
     _L9963E_DRV_build_frame(raw, 1, is_write ? 1 : 0, device, address, is_write ? data->generic : 0);
 
@@ -283,9 +292,11 @@ L9963E_StatusTypeDef L9963E_DRV_reg_read(L9963E_DRV_HandleTypeDef *handle,
                                          L9963E_RegistersAddrTypeDef address,
                                          L9963E_RegisterUnionTypeDef *data,
                                          uint8_t timeout) {
+#if L9963E_DEBUG
     if (device == 0) {
         return L9963E_ERROR;
     }
+#endif
 
     return _L9963E_DRV_reg_cmd(handle, 0, device, address, data, timeout);
 }

@@ -11,6 +11,10 @@
 #ifndef L9963E_H
 #define L9963E_H
 
+#ifndef L9963E_DEBUG
+#define L9963E_DEBUG 1
+#endif  //L9963E_DEBUG
+
 #include "L9963E_drv.h"
 #include "L9963E_status.h"
 
