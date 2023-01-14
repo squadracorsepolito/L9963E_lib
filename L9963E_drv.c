@@ -14,7 +14,7 @@
 
 #define WORD_LEN           40UL
 #define CRC_LEN            6UL
-#define CRC_POLY           (uint64_t)0x0000000000000059 /*L9301 CRC Poly:x^3+x^2+x+1*/
+#define CRC_POLY           (uint64_t)0x0000000000000059 /*L9963 CRC Poly:x^3+x^2+x+1*/
 #define CRC_SEED           (uint64_t)0x0000000000000038
 #define CRC_INIT_SEED_MASK (CRC_SEED << (WORD_LEN - CRC_LEN))
 #define CRC_INIT_MASK      (CRC_POLY << (WORD_LEN - CRC_LEN - 1))
@@ -24,24 +24,22 @@
 uint8_t L9963E_DRV_crc_calc(uint64_t InputWord) {
     uint64_t TestBitMask;
     uint64_t CRCMask;
-    uint64_t BitCount;
-    uint64_t LeftAlignedWord;
+    uint8_t BitCount;
 
-    InputWord &= 0xFFFFFFFFFFFFFFC0; /* Clear the CRC bit in the data frame*/
-    LeftAlignedWord = InputWord ^ CRC_INIT_SEED_MASK;
+    InputWord = (InputWord & 0xFFFFFFFFC0) ^ CRC_INIT_SEED_MASK; /* Clear the CRC bit in the data frame*/
 
     TestBitMask = FIRST_BIT_MASK;
     CRCMask     = CRC_INIT_MASK;  // 1111 <<
     BitCount    = (WORD_LEN - CRC_LEN);
     while (0 != BitCount--) {
-        if (0 != (LeftAlignedWord & TestBitMask)) {
-            LeftAlignedWord ^= CRCMask;
+        if (0 != (InputWord & TestBitMask)) {
+            InputWord ^= CRCMask;
         } /* endif */
         CRCMask >>= 1;
         TestBitMask >>= 1;
     } /* endwhile */
 
-    return LeftAlignedWord & (uint64_t)CRC_LOWER_MASK;
+    return InputWord & (uint64_t)CRC_LOWER_MASK;
 }
 
 L9963E_StatusTypeDef L9963E_DRV_init(L9963E_DRV_HandleTypeDef *handle,
