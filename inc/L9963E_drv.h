@@ -12,30 +12,40 @@
 #define L9963E_DRV_H
 
 #include "L9963E_burst.h"
+#include "L9963E_interface.h"
 #include "L9963E_registers.h"
 #include "L9963E_status.h"
-#include "main.h"
 
-#include <stdint.h>
+#include <inttypes.h>
 
 #ifndef L9963E_DEBUG
 #define L9963E_DEBUG 1
 #endif  //L9963E_DEBUG
 
-#define L9963E_DRV_CS_HIGH(HANDLE) HAL_GPIO_WritePin((HANDLE)->cs_port, (HANDLE)->cs_pin, GPIO_PIN_SET)
-#define L9963E_DRV_CS_LOW(HANDLE)  HAL_GPIO_WritePin((HANDLE)->cs_port, (HANDLE)->cs_pin, GPIO_PIN_RESET)
+#define L9963E_DRV_CS_HIGH(HANDLE) ((HANDLE)->interface.L9963E_IF_GPIO_WritePin(L9963E_IF_CS, L9963E_IF_GPIO_PIN_SET))
+#define L9963E_DRV_CS_LOW(HANDLE)  ((HANDLE)->interface.L9963E_IF_GPIO_WritePin(L9963E_IF_CS, L9963E_IF_GPIO_PIN_RESET))
 
-#define L9963E_DRV_TXEN_HIGH(HANDLE) HAL_GPIO_WritePin((HANDLE)->txen_port, (HANDLE)->txen_pin, GPIO_PIN_SET)
-#define L9963E_DRV_TXEN_LOW(HANDLE)  HAL_GPIO_WritePin((HANDLE)->txen_port, (HANDLE)->txen_pin, GPIO_PIN_RESET)
+#define L9963E_DRV_TXEN_HIGH(HANDLE) \
+    ((HANDLE)->interface.L9963E_IF_GPIO_WritePin(L9963E_IF_TXEN, L9963E_IF_GPIO_PIN_SET))
+#define L9963E_DRV_TXEN_LOW(HANDLE) \
+    ((HANDLE)->interface.L9963E_IF_GPIO_WritePin(L9963E_IF_TXEN, L9963E_IF_GPIO_PIN_RESET))
 
-#define L9963E_DRV_ISOFREQ_HIGH(HANDLE) HAL_GPIO_WritePin((HANDLE)->isofreq_port, (HANDLE)->isofreq_pin, GPIO_PIN_SET)
-#define L9963E_DRV_ISOFREQ_LOW(HANDLE)  HAL_GPIO_WritePin((HANDLE)->isofreq_port, (HANDLE)->isofreq_pin, GPIO_PIN_RESET)
+#define L9963E_DRV_ISOFREQ_HIGH(HANDLE) \
+    ((HANDLE)->interface.L9963E_IF_GPIO_WritePin(L9963E_IF_ISOFREQ, L9963E_IF_GPIO_PIN_SET))
+#define L9963E_DRV_ISOFREQ_LOW(HANDLE) \
+    ((HANDLE)->interface.L9963E_IF_GPIO_WritePin(L9963E_IF_ISOFREQ, L9963E_IF_GPIO_PIN_RESET))
 
-#define L9963E_DRV_BNE_READ(HANDLE) HAL_GPIO_ReadPin((HANDLE)->bne_port, (HANDLE)->bne_pin)
+#define L9963E_DRV_BNE_READ(HANDLE) ((HANDLE)->interface.L9963E_IF_GPIO_ReadPin(L9963E_IF_BNE))
+
+#define L9963E_DRV_SPI_RECEIVE(HANDLE, DATA, SIZE, TIMEOUT_MS) \
+    ((HANDLE)->interface.L9963E_IF_SPI_Receive((DATA), (SIZE), (TIMEOUT_MS)))
+#define L9963E_DRV_SPI_TRANSMIT(HANDLE, DATA, SIZE, TIMEOUT_MS) \
+    ((HANDLE)->interface.L9963E_IF_SPI_Transmit((DATA), (SIZE), (TIMEOUT_MS)))
+
+#define L9963E_DRV_GETTICK(HANDLE)      ((HANDLE)->interface.L9963E_IF_GetTickMs())
+#define L9963E_DRV_DELAY(HANDLE, DELAY) ((HANDLE)->interface.L9963E_IF_DelayMs((DELAY)))
 
 #define L9963E_DEVICE_BROADCAST 0x0U
-
-#define L9963E_DRV_CMD_MASK 0xFFFFFFFFFF
 
 union L9963E_DRV_FrameUnion {
     uint64_t val;
@@ -46,43 +56,18 @@ union L9963E_DRV_FrameUnion {
 typedef union L9963E_DRV_FrameUnion L9963E_DRV_CmdTypeDef;
 
 struct L9963E_DRV_HandleStruct {
-    SPI_HandleTypeDef *hspi;
-    GPIO_TypeDef *cs_port;
-    uint16_t cs_pin;
-
-    GPIO_TypeDef *txen_port;
-    uint16_t txen_pin;
-
-    GPIO_TypeDef *bne_port;
-    uint16_t bne_pin;
-
-    GPIO_TypeDef *isofreq_port;
-    uint16_t isofreq_pin;
+    L9963E_IfTypeDef interface;
 };
 typedef struct L9963E_DRV_HandleStruct L9963E_DRV_HandleTypeDef;
+
 /**
  * @brief     Initialize the handle 
  * 
  * @param     handle Reference handle to be initialized
- * @param     hspi Reference to the spi handle to be used
- * @param     cs_port Reference to the Chip Select port
- * @param     cs_pin Chip Select pin
- * @param     txen_port Reference to the TXEN port
- * @param     txen_pin TXEN pin
- * @param     bne_port Reference to the BNE port
- * @param     bne_pin BNE pin
+ * @param     interface Struct containing the abstraction interface
  * @return    HAL_OK on success, HAL_ERROR on failure
  */
-L9963E_StatusTypeDef L9963E_DRV_init(L9963E_DRV_HandleTypeDef *handle,
-                                     SPI_HandleTypeDef *hspi,
-                                     GPIO_TypeDef *cs_port,
-                                     uint16_t cs_pin,
-                                     GPIO_TypeDef *txen_port,
-                                     uint16_t txen_pin,
-                                     GPIO_TypeDef *bne_port,
-                                     uint16_t bne_pin,
-                                     GPIO_TypeDef *isofreq_port,
-                                     uint16_t isofreq_pin);
+L9963E_StatusTypeDef L9963E_DRV_init(L9963E_DRV_HandleTypeDef *handle, L9963E_IfTypeDef interface);
 /**
  * @brief     Wakes up the IC 
  * 
@@ -133,4 +118,4 @@ L9963E_StatusTypeDef L9963E_DRV_burst_cmd(L9963E_DRV_HandleTypeDef *handle,
                                           uint8_t expected_frames_n,
                                           uint8_t timeout);
 
-#endif  //L9963E_DRV_DRV_H
+#endif  //L9963E_DRV_H

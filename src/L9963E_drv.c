@@ -10,6 +10,7 @@
 
 #include "L9963E_drv.h"
 
+#include <stddef.h>
 #include <string.h>
 
 #define WORD_LEN           40UL
@@ -42,51 +43,38 @@ uint8_t L9963E_DRV_crc_calc(uint64_t InputWord) {
     return InputWord & (uint64_t)CRC_LOWER_MASK;
 }
 
-L9963E_StatusTypeDef L9963E_DRV_init(L9963E_DRV_HandleTypeDef *handle,
-                                     SPI_HandleTypeDef *hspi,
-                                     GPIO_TypeDef *cs_port,
-                                     uint16_t cs_pin,
-                                     GPIO_TypeDef *txen_port,
-                                     uint16_t txen_pin,
-                                     GPIO_TypeDef *bne_port,
-                                     uint16_t bne_pin,
-                                     GPIO_TypeDef *isofreq_port,
-                                     uint16_t isofreq_pin) {
+L9963E_StatusTypeDef L9963E_DRV_init(L9963E_DRV_HandleTypeDef *handle, L9963E_IfTypeDef interface) {
 #if L9963E_DEBUG
     if (handle == NULL) {
         return L9963E_ERROR;
     }
 
-    if (hspi == NULL) {
+    if (interface.L9963E_IF_GPIO_ReadPin == NULL) {
         return L9963E_ERROR;
     }
 
-    if (cs_port == NULL) {
+    if (interface.L9963E_IF_GPIO_WritePin == NULL) {
         return L9963E_ERROR;
     }
 
-    if (txen_port == NULL) {
+    if (interface.L9963E_IF_SPI_Receive == NULL) {
         return L9963E_ERROR;
     }
 
-    if (bne_port == NULL) {
+    if (interface.L9963E_IF_SPI_Transmit == NULL) {
         return L9963E_ERROR;
     }
 
-    if (isofreq_port == NULL) {
+    if (interface.L9963E_IF_GetTickMs == NULL) {
+        return L9963E_ERROR;
+    }
+
+    if (interface.L9963E_IF_DelayMs == NULL) {
         return L9963E_ERROR;
     }
 #endif
 
-    handle->hspi         = hspi;
-    handle->cs_port      = cs_port;
-    handle->cs_pin       = cs_pin;
-    handle->txen_port    = txen_port;
-    handle->txen_pin     = txen_pin;
-    handle->bne_port     = bne_port;
-    handle->bne_pin      = bne_pin;
-    handle->isofreq_port = isofreq_port;
-    handle->isofreq_pin  = isofreq_pin;
+    handle->interface = interface;
 
     L9963E_DRV_CS_HIGH(handle);
     L9963E_DRV_TXEN_HIGH(handle);
@@ -106,7 +94,7 @@ L9963E_StatusTypeDef L9963E_DRV_wakeup(L9963E_DRV_HandleTypeDef *handle) {
 #endif
 
     L9963E_DRV_CS_LOW(handle);
-    errorcode = HAL_SPI_Transmit(handle->hspi, (uint8_t *)dummy, sizeof(dummy), 10);
+    errorcode = L9963E_DRV_SPI_RECEIVE(handle, (uint8_t *)dummy, sizeof(dummy), 10);
     L9963E_DRV_CS_HIGH(handle);
 
     return errorcode;
@@ -138,7 +126,7 @@ L9963E_StatusTypeDef _L9963E_DRV_build_frame(uint8_t *out,
 
     _L9963E_DRV_switch_endianness((uint8_t *)&frame.val, out);
 
-    return HAL_OK;
+    return L9963E_OK;
 }
 
 L9963E_StatusTypeDef _L9963E_DRV_spi_transmit(L9963E_DRV_HandleTypeDef *handle,
@@ -149,7 +137,7 @@ L9963E_StatusTypeDef _L9963E_DRV_spi_transmit(L9963E_DRV_HandleTypeDef *handle,
 
     L9963E_DRV_TXEN_HIGH(handle);
     L9963E_DRV_CS_LOW(handle);
-    errorcode = HAL_SPI_Transmit(handle->hspi, data, len, timeout);
+    errorcode = L9963E_DRV_SPI_TRANSMIT(handle, data, len, timeout);
     L9963E_DRV_TXEN_LOW(handle);
     L9963E_DRV_CS_HIGH(handle);
 
@@ -170,15 +158,15 @@ L9963E_StatusTypeDef _L9963E_DRV_wait_and_receive(union L9963E_DRV_FrameUnion *f
 
     L9963E_DRV_TXEN_LOW(handle);
     while (frame->cmd.devid != device) {
-        while (L9963E_DRV_BNE_READ(handle) == GPIO_PIN_RESET) {
-            if (HAL_GetTick() - current_tick >= timeout) {
+        while (L9963E_DRV_BNE_READ(handle) == L9963E_IF_GPIO_PIN_RESET) {
+            if (L9963E_DRV_GETTICK(handle) - current_tick >= timeout) {
                 L9963E_DRV_TXEN_HIGH(handle);
                 return L9963E_TIMEOUT;
             }
         }
 
         L9963E_DRV_CS_LOW(handle);
-        errorcode = HAL_SPI_Receive(handle->hspi, raw, 5, 10);
+        errorcode = L9963E_DRV_SPI_RECEIVE(handle, raw, 5, 10);
         L9963E_DRV_CS_HIGH(handle);
         L9963E_DRV_TXEN_HIGH(handle);
 
@@ -193,7 +181,7 @@ L9963E_StatusTypeDef _L9963E_DRV_wait_and_receive(union L9963E_DRV_FrameUnion *f
         }
     }
 
-    return HAL_OK;
+    return L9963E_OK;
 }
 
 L9963E_StatusTypeDef L9963E_DRV_burst_cmd(L9963E_DRV_HandleTypeDef *handle,
@@ -225,7 +213,7 @@ L9963E_StatusTypeDef L9963E_DRV_burst_cmd(L9963E_DRV_HandleTypeDef *handle,
         return errorcode;
     }
 
-    current_tick = HAL_GetTick();
+    current_tick = L9963E_DRV_GETTICK(handle);
     for (uint8_t i = 0; i < expected_frames_n; ++i) {
         errorcode = _L9963E_DRV_wait_and_receive(&frame, handle, device, current_tick, timeout);
 
@@ -270,7 +258,7 @@ L9963E_StatusTypeDef _L9963E_DRV_reg_cmd(L9963E_DRV_HandleTypeDef *handle,
         return errorcode;
     }
 
-    errorcode = _L9963E_DRV_wait_and_receive(&frame, handle, device, HAL_GetTick(), timeout);
+    errorcode = _L9963E_DRV_wait_and_receive(&frame, handle, device, L9963E_DRV_GETTICK(handle), timeout);
 
     if (errorcode != L9963E_OK) {
         return errorcode;

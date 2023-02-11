@@ -10,17 +10,9 @@
 
 #include "L9963E.h"
 
-L9963E_StatusTypeDef L9963E_init(L9963E_HandleTypeDef *handle,
-                                 SPI_HandleTypeDef *hspi,
-                                 GPIO_TypeDef *cs_port,
-                                 uint16_t cs_pin,
-                                 GPIO_TypeDef *txen_port,
-                                 uint16_t txen_pin,
-                                 GPIO_TypeDef *bne_port,
-                                 uint16_t bne_pin,
-                                 GPIO_TypeDef *isofreq_port,
-                                 uint16_t isofreq_pin,
-                                 uint8_t slave_n) {
+#include <stddef.h>
+
+L9963E_StatusTypeDef L9963E_init(L9963E_HandleTypeDef *handle, L9963E_IfTypeDef interface, uint8_t slave_n) {
 #if L9963E_DEBUG
     if (handle == NULL) {
         return L9963E_ERROR;
@@ -33,16 +25,7 @@ L9963E_StatusTypeDef L9963E_init(L9963E_HandleTypeDef *handle,
 
     handle->slave_n = slave_n;
 
-    return L9963E_DRV_init(&(handle->drv_handle),
-                           hspi,
-                           cs_port,
-                           cs_pin,
-                           txen_port,
-                           txen_pin,
-                           bne_port,
-                           bne_pin,
-                           isofreq_port,
-                           isofreq_pin);
+    return L9963E_DRV_init(&(handle->drv_handle), interface);
 }
 
 L9963E_StatusTypeDef L9963E_addressing_procedure(L9963E_HandleTypeDef *handle,
@@ -53,7 +36,7 @@ L9963E_StatusTypeDef L9963E_addressing_procedure(L9963E_HandleTypeDef *handle,
     L9963E_RegisterUnionTypeDef write_reg;
     L9963E_RegisterUnionTypeDef read_reg;
 
-    uint32_t tick = HAL_GetTick();
+    uint32_t tick = L9963E_DRV_GETTICK(&(handle->drv_handle));
     uint8_t x     = 1;
 
 #if L9963E_DEBUG
@@ -70,16 +53,16 @@ L9963E_StatusTypeDef L9963E_addressing_procedure(L9963E_HandleTypeDef *handle,
         if (L9963E_DRV_reg_read(&(handle->drv_handle), x, DEV_GEN_CFG, &read_reg, 1) == L9963E_OK &&
             read_reg.DEV_GEN_CFG.chip_ID == x) {
             ++x;
-            tick = HAL_GetTick();
+            tick = L9963E_DRV_GETTICK(&(handle->drv_handle));
         } else {
-            if (HAL_GetTick() - tick >= 10) {
+            if (L9963E_DRV_GETTICK(&(handle->drv_handle)) - tick >= 10) {
                 return L9963E_TIMEOUT;
             }
 
             //wakeup the device
             L9963E_DRV_wakeup(&(handle->drv_handle));
             // by default the wakeup procedure needs 2 ms of time (T_WAKEUP)
-            HAL_Delay(2);
+            L9963E_DRV_DELAY(&(handle->drv_handle), 2);
 
             //send broadcast command setting the chip_id
             write_reg.DEV_GEN_CFG.chip_ID      = x;
