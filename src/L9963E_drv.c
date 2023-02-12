@@ -294,3 +294,33 @@ L9963E_StatusTypeDef L9963E_DRV_reg_write(L9963E_DRV_HandleTypeDef *handle,
                                           uint8_t timeout) {
     return _L9963E_DRV_reg_cmd(handle, 1, device, address, data, timeout);
 }
+
+L9963E_StatusTypeDef L9963E_DRV_trans_sleep(L9963E_DRV_HandleTypeDef *handle) {
+#if L9963E_DEBUG
+    if (handle == NULL) {
+        return L9963E_ERROR;
+    }
+#endif
+
+    return L9963E_DRV_DIS_LOW(handle);
+}
+
+L9963E_StatusTypeDef L9963E_DRV_trans_wakeup(L9963E_DRV_HandleTypeDef *handle) {
+#if L9963E_DEBUG
+    if (handle == NULL) {
+        return L9963E_ERROR;
+    }
+#endif
+
+    return L9963E_DRV_DIS_HIGH(handle);
+}
+
+L9963E_IF_PinState L9963E_DRV_trans_is_sleeping(L9963E_DRV_HandleTypeDef *handle) {
+#if L9963E_DEBUG
+    if (handle == NULL) {
+        return L9963E_ERROR;
+    }
+#endif
+
+    return L9963E_DRV_DIS_READ(handle);
+}

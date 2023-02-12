@@ -22,20 +22,23 @@
 #define L9963E_DEBUG 1
 #endif  //L9963E_DEBUG
 
-#define L9963E_DRV_CS_HIGH(HANDLE) ((HANDLE)->interface.L9963E_IF_GPIO_WritePin(L9963E_IF_CS, L9963E_IF_GPIO_PIN_SET))
-#define L9963E_DRV_CS_LOW(HANDLE)  ((HANDLE)->interface.L9963E_IF_GPIO_WritePin(L9963E_IF_CS, L9963E_IF_GPIO_PIN_RESET))
+#define L9963E_DRV_WRITE_PIN(HANDLE, PIN, VAL) ((HANDLE)->interface.L9963E_IF_GPIO_WritePin((PIN), (VAL)))
+#define L9963E_DRV_READ_PIN(HANDLE, PIN)       ((HANDLE)->interface.L9963E_IF_GPIO_ReadPin((PIN)))
 
-#define L9963E_DRV_TXEN_HIGH(HANDLE) \
-    ((HANDLE)->interface.L9963E_IF_GPIO_WritePin(L9963E_IF_TXEN, L9963E_IF_GPIO_PIN_SET))
-#define L9963E_DRV_TXEN_LOW(HANDLE) \
-    ((HANDLE)->interface.L9963E_IF_GPIO_WritePin(L9963E_IF_TXEN, L9963E_IF_GPIO_PIN_RESET))
+#define L9963E_DRV_CS_HIGH(HANDLE) L9963E_DRV_WRITE_PIN(HANDLE, L9963E_IF_CS, L9963E_IF_GPIO_PIN_SET)
+#define L9963E_DRV_CS_LOW(HANDLE)  L9963E_DRV_WRITE_PIN(HANDLE, L9963E_IF_CS, L9963E_IF_GPIO_PIN_RESET)
 
-#define L9963E_DRV_ISOFREQ_HIGH(HANDLE) \
-    ((HANDLE)->interface.L9963E_IF_GPIO_WritePin(L9963E_IF_ISOFREQ, L9963E_IF_GPIO_PIN_SET))
-#define L9963E_DRV_ISOFREQ_LOW(HANDLE) \
-    ((HANDLE)->interface.L9963E_IF_GPIO_WritePin(L9963E_IF_ISOFREQ, L9963E_IF_GPIO_PIN_RESET))
+#define L9963E_DRV_TXEN_HIGH(HANDLE) L9963E_DRV_WRITE_PIN(HANDLE, L9963E_IF_TXEN, L9963E_IF_GPIO_PIN_SET)
+#define L9963E_DRV_TXEN_LOW(HANDLE)  L9963E_DRV_WRITE_PIN(HANDLE, L9963E_IF_TXEN, L9963E_IF_GPIO_PIN_RESET)
 
-#define L9963E_DRV_BNE_READ(HANDLE) ((HANDLE)->interface.L9963E_IF_GPIO_ReadPin(L9963E_IF_BNE))
+#define L9963E_DRV_ISOFREQ_HIGH(HANDLE) L9963E_DRV_WRITE_PIN(HANDLE, L9963E_IF_ISOFREQ, L9963E_IF_GPIO_PIN_SET)
+#define L9963E_DRV_ISOFREQ_LOW(HANDLE)  L9963E_DRV_WRITE_PIN(HANDLE, L9963E_IF_ISOFREQ, L9963E_IF_GPIO_PIN_RESET)
+
+#define L9963E_DRV_BNE_READ(HANDLE) L9963E_DRV_READ_PIN(HANDLE, L9963E_IF_BNE)
+
+#define L9963E_DRV_DIS_HIGH(HANDLE) L9963E_DRV_WRITE_PIN(HANDLE, L9963E_IF_DIS, L9963E_IF_GPIO_PIN_SET)
+#define L9963E_DRV_DIS_LOW(HANDLE)  L9963E_DRV_WRITE_PIN(HANDLE, L9963E_IF_DIS, L9963E_IF_GPIO_PIN_RESET)
+#define L9963E_DRV_DIS_READ(HANDLE) L9963E_DRV_READ_PIN(HANDLE, L9963E_IF_DIS)
 
 #define L9963E_DRV_SPI_RECEIVE(HANDLE, DATA, SIZE, TIMEOUT_MS) \
     ((HANDLE)->interface.L9963E_IF_SPI_Receive((DATA), (SIZE), (TIMEOUT_MS)))
@@ -65,14 +68,14 @@ typedef struct L9963E_DRV_HandleStruct L9963E_DRV_HandleTypeDef;
  * 
  * @param     handle Reference handle to be initialized
  * @param     interface Struct containing the abstraction interface
- * @return    HAL_OK on success, HAL_ERROR on failure
+ * @return    L9963E_OK on success, L9963E_ERROR on failure
  */
 L9963E_StatusTypeDef L9963E_DRV_init(L9963E_DRV_HandleTypeDef *handle, L9963E_IfTypeDef interface);
 /**
  * @brief     Wakes up the IC 
  * 
  * @param     handle Reference to the handle
- * @return    HAL_OK on success, HAL_ERROR on failure
+ * @return    L9963E_OK on success, L9963E_ERROR on failure
  */
 L9963E_StatusTypeDef L9963E_DRV_wakeup(L9963E_DRV_HandleTypeDef *handle);
 /**
@@ -82,7 +85,7 @@ L9963E_StatusTypeDef L9963E_DRV_wakeup(L9963E_DRV_HandleTypeDef *handle);
  * @param     device Device id (cannot be 0x0)
  * @param     address Address of the register to be read
  * @param     data Reference to the structure to be populated with the read data
- * @return    HAL_OK on success, HAL_ERROR on failure
+ * @return    L9963E_OK on success, L9963E_ERROR on failure
  */
 L9963E_StatusTypeDef L9963E_DRV_reg_read(L9963E_DRV_HandleTypeDef *handle,
                                          uint8_t device,
@@ -96,7 +99,7 @@ L9963E_StatusTypeDef L9963E_DRV_reg_read(L9963E_DRV_HandleTypeDef *handle,
  * @param     device Device id (can be 0x0 for broadcast)
  * @param     address Address of the register to be read
  * @param     data Data to be written
- * @return    HAL_OK on success, HAL_ERROR on failure
+ * @return    L9963E_OK on success, L9963E_ERROR on failure
  */
 L9963E_StatusTypeDef L9963E_DRV_reg_write(L9963E_DRV_HandleTypeDef *handle,
                                           uint8_t device,
@@ -110,12 +113,42 @@ L9963E_StatusTypeDef L9963E_DRV_reg_write(L9963E_DRV_HandleTypeDef *handle,
  * @return    the calculated CRC6
  */
 uint8_t L9963E_DRV_crc_calc(uint64_t InputWord);
-
+/**
+ * @brief Send a burst command and read the frames
+ * 
+ * @param handle Reference to the handle
+ * @param device Device id (can be 0x0 for broadcast)
+ * @param command Command to be sent
+ * @param data Reference to the structure to be populated with the read data
+ * @param expected_frames_n Number of frames to be read (defined in L9963E_burst.h)
+ * @return 
+ */
 L9963E_StatusTypeDef L9963E_DRV_burst_cmd(L9963E_DRV_HandleTypeDef *handle,
                                           uint8_t device,
                                           L9963E_BurstCmdTypeDef command,
                                           L9963E_BurstUnionTypeDef *data,
                                           uint8_t expected_frames_n,
                                           uint8_t timeout);
+/** 
+ * @brief Deassert DIS pin to let the transceiver go to sleep mode
+ * 
+ * @param handle Reference to the handle
+ * @return L9963E_StatusTypeDef
+ */
+L9963E_StatusTypeDef L9963E_DRV_trans_sleep(L9963E_DRV_HandleTypeDef *handle);
+/** 
+ * @brief Assert DIS pin to wake up the transceiver from sleep mode
+ * 
+ * @param handle Reference to the handle
+ * @return L9963E_StatusTypeDef
+ */
+L9963E_StatusTypeDef L9963E_DRV_trans_wakeup(L9963E_DRV_HandleTypeDef *handle);
+/** 
+ * @brief Read DIS pin to check whether the transceiver is sleeping
+ * 
+ * @param handle Reference to the handle
+ * @return L9963E_IF_PinState
+ */
+L9963E_IF_PinState L9963E_DRV_trans_is_sleeping(L9963E_DRV_HandleTypeDef *handle);
 
 #endif  //L9963E_DRV_H

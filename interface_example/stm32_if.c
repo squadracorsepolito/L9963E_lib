@@ -18,6 +18,9 @@ L9963E_IF_PinState GPIO_ReadPin(L9963E_IF_PINS pin) {
         case L9963E_IF_ISOFREQ:
             state = HAL_GPIO_ReadPin(ISOFREQ_GPIO_Port, ISOFREQ_Pin);
             break;
+        case L9963E_IF_DIS:
+            state = HAL_GPIO_ReadPin(DIS_GPIO_Port, DIS_Pin);
+            break;
     }
 
     return state == L9963E_IF_GPIO_PIN_RESET ? GPIO_PIN_RESET : GPIO_PIN_SET;  //convert lib state to stm state
@@ -37,6 +40,9 @@ L9963E_StatusTypeDef GPIO_WritePin(L9963E_IF_PINS pin, L9963E_IF_PinState state)
             break;
         case L9963E_IF_ISOFREQ:
             HAL_GPIO_WritePin(ISOFREQ_GPIO_Port, ISOFREQ_Pin, stm_state);
+            break;
+        case L9963E_IF_DIS:
+            HAL_GPIO_WritePin(DIS_GPIO_Port, DIS_Pin, stm_state);
             break;
         default:
             return L9963E_ERROR;
