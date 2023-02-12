@@ -1,6 +1,6 @@
 # L9963E_lib
 
-This project implements the low level communication between a STM32 microcontroller and the [ST L9963E Automotive Multicell battery monitoring and balancing IC](https://www.st.com/en/automotive-analog-and-power/l9963e.html).
+This project implements the low level communication between any microcontroller and the [ST L9963E Automotive Multicell battery monitoring and balancing IC](https://www.st.com/en/automotive-analog-and-power/l9963e.html).
 
 Both *register level* access and *burst commands* are implemented.
 
