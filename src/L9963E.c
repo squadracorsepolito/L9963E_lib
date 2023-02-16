@@ -10,6 +10,7 @@
 
 #include "L9963E.h"
 
+#include <memory.h>
 #include <stddef.h>
 
 L9963E_StatusTypeDef L9963E_init(L9963E_HandleTypeDef *handle, L9963E_IfTypeDef interface, uint8_t slave_n) {
@@ -50,7 +51,7 @@ L9963E_StatusTypeDef L9963E_addressing_procedure(L9963E_HandleTypeDef *handle,
         read_reg.generic  = 0;
 
         //readback, if successful continue, else repeat the same cycle
-        if (L9963E_DRV_reg_read(&(handle->drv_handle), x, DEV_GEN_CFG, &read_reg, 1) == L9963E_OK &&
+        if (L9963E_DRV_reg_read(&(handle->drv_handle), x, L9963E_DEV_GEN_CFG_ADDR, &read_reg, 1) == L9963E_OK &&
             read_reg.DEV_GEN_CFG.chip_ID == x) {
             ++x;
             tick = L9963E_DRV_GETTICK(&(handle->drv_handle));
@@ -64,15 +65,17 @@ L9963E_StatusTypeDef L9963E_addressing_procedure(L9963E_HandleTypeDef *handle,
             // by default the wakeup procedure needs 2 ms of time (T_WAKEUP)
             L9963E_DRV_DELAY(&(handle->drv_handle), 2);
 
-            //send broadcast command setting the chip_id
+            //send broadcast command setting the chip_idz
+            write_reg.generic                  = L9963E_DEV_GEN_CFG_DEFAULT;
             write_reg.DEV_GEN_CFG.chip_ID      = x;
             write_reg.DEV_GEN_CFG.iso_freq_sel = 0b00;
 
-            L9963E_DRV_reg_write(&(handle->drv_handle), L9963E_DEVICE_BROADCAST, DEV_GEN_CFG, &write_reg, 1);
+            L9963E_DRV_reg_write(
+                &(handle->drv_handle), L9963E_DEVICE_BROADCAST, L9963E_DEV_GEN_CFG_ADDR, &write_reg, 1);
         }
     }
 
-    write_reg.generic                    = 0;
+    write_reg.generic                    = L9963E_DEV_GEN_CFG_DEFAULT;
     write_reg.DEV_GEN_CFG.isotx_en_h     = 0b1;
     write_reg.DEV_GEN_CFG.out_res_tx_iso = out_res_tx_iso;
     write_reg.DEV_GEN_CFG.iso_freq_sel   = iso_freq_sel;
@@ -82,20 +85,20 @@ L9963E_StatusTypeDef L9963E_addressing_procedure(L9963E_HandleTypeDef *handle,
     else
         L9963E_DRV_ISOFREQ_LOW(&(handle->drv_handle));
 
-    L9963E_DRV_reg_write(&(handle->drv_handle), L9963E_DEVICE_BROADCAST, DEV_GEN_CFG, &write_reg, 1);
+    L9963E_DRV_reg_write(&(handle->drv_handle), L9963E_DEVICE_BROADCAST, L9963E_DEV_GEN_CFG_ADDR, &write_reg, 1);
 
     write_reg.DEV_GEN_CFG.Farthest_Unit = 0b1;
     if (!handle->is_dual_ring) {
         write_reg.DEV_GEN_CFG.isotx_en_h = 0;
     }
 
-    L9963E_DRV_reg_write(&(handle->drv_handle), handle->slave_n, DEV_GEN_CFG, &write_reg, 1);
+    L9963E_DRV_reg_write(&(handle->drv_handle), handle->slave_n, L9963E_DEV_GEN_CFG_ADDR, &write_reg, 1);
 
     if (lock_isofreq == 1) {
-        write_reg.generic                 = 0;
+        write_reg.generic                 = L9963E_BAL_3_DEFAULT;
         write_reg.Bal_3.Lock_isoh_isofreq = 1;
 
-        L9963E_DRV_reg_write(&(handle->drv_handle), L9963E_DEVICE_BROADCAST, Bal_3, &write_reg, 1);
+        L9963E_DRV_reg_write(&(handle->drv_handle), L9963E_DEVICE_BROADCAST, L9963E_Bal_3_ADDR, &write_reg, 1);
     }
 
     return L9963E_OK;
@@ -103,7 +106,8 @@ L9963E_StatusTypeDef L9963E_addressing_procedure(L9963E_HandleTypeDef *handle,
 
 L9963E_StatusTypeDef L9963E_setCommTimeout_Broadcast(L9963E_HandleTypeDef *handle,
                                                      L9963E_CommTimeoutTypeDef commTimeout) {
-    L9963E_RegisterUnionTypeDef fastch_baluv_reg = {.fastch_baluv = {.CommTimeout = commTimeout}};
+    L9963E_RegisterUnionTypeDef fastch_baluv_reg = {.generic = L9963E_FASTCH_BALUV_DEFAULT};
+    fastch_baluv_reg.fastch_baluv.CommTimeout    = commTimeout;
 
 #if L9963E_DEBUG
     if (handle == NULL) {
@@ -111,7 +115,8 @@ L9963E_StatusTypeDef L9963E_setCommTimeout_Broadcast(L9963E_HandleTypeDef *handl
     }
 #endif
 
-    return L9963E_DRV_reg_write(&(handle->drv_handle), L9963E_DEVICE_BROADCAST, fastch_baluv, &fastch_baluv_reg, 10);
+    return L9963E_DRV_reg_write(
+        &(handle->drv_handle), L9963E_DEVICE_BROADCAST, L9963E_fastch_baluv_ADDR, &fastch_baluv_reg, 10);
 }
 
 L9963E_StatusTypeDef L9963E_setCommTimeout(L9963E_HandleTypeDef *handle,
@@ -128,14 +133,17 @@ L9963E_StatusTypeDef L9963E_setCommTimeout(L9963E_HandleTypeDef *handle,
 #endif
 
     if (preserve_reg_value) {
-        errorcode = L9963E_DRV_reg_read(&(handle->drv_handle), device, fastch_baluv, &fastch_baluv_reg, 10);
+        errorcode = L9963E_DRV_reg_read(&(handle->drv_handle), device, L9963E_fastch_baluv_ADDR, &fastch_baluv_reg, 10);
 
         if (errorcode != L9963E_OK) {
             return errorcode;
         }
+    } else {
+        fastch_baluv_reg.generic = L9963E_FASTCH_BALUV_DEFAULT;
     }
 
     fastch_baluv_reg.fastch_baluv.CommTimeout = commTimeout;
 
-    return L9963E_DRV_reg_write(&(handle->drv_handle), L9963E_DEVICE_BROADCAST, fastch_baluv, &fastch_baluv_reg, 10);
+    return L9963E_DRV_reg_write(
+        &(handle->drv_handle), L9963E_DEVICE_BROADCAST, L9963E_fastch_baluv_ADDR, &fastch_baluv_reg, 10);
 }

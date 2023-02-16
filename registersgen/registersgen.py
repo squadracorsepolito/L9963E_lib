@@ -19,6 +19,7 @@ from pathlib import Path
 class Field:
     name: str
     width: str
+    default: str
 
 @dataclass
 class Register:
@@ -36,7 +37,7 @@ tables = tabula.read_pdf(file, pages=[*range(102, 128)], lattice=True)
 
 t = pd.concat(tables[1:])
 
-t = t.rename(columns={'Register Name': 'regname', 'Unnamed: 0': 'address', 'Field name': 'fieldname', 'Unnamed: 3': 'fieldwidth', 'Description': 'descr'})
+t = t.rename(columns={'Register Name': 'regname', 'Unnamed: 0': 'address', 'Field name': 'fieldname', 'Unnamed: 3': 'fieldwidth', 'Unnamed: 4': 'field_default', 'Description': 'descr'})
 
 registers = []
 
@@ -46,9 +47,9 @@ for _, row in t.iterrows():
     if not row['regname'] != row['regname']:
         max_reg_strlen = max(len(row['regname'].replace('\r', ''))+4, max_reg_strlen)
         registers.append(Register(row['regname'].replace('\r', ''), row['address'], 0, []))
-    elif not (row['fieldname'] != row['fieldname'] or row['fieldwidth'] != row['fieldwidth']):
+    elif not (row['fieldname'] != row['fieldname'] or row['fieldwidth'] != row['fieldwidth'] or row['field_default'] != row['field_default']):
         registers[-1].max_field_strlen = max(registers[-1].max_field_strlen, len(str(row['fieldname']).replace('\r', ''))+4)
-        registers[-1].fields.append(Field(str(row['fieldname']).replace('\r', ''), int(row['fieldwidth'])))
+        registers[-1].fields.append(Field(str(row['fieldname']).replace('\r', ''), int(row['fieldwidth']), row['field_default']))
 
 for i, reg in enumerate(registers):
     if sum([f.width for f in reg.fields]) != 18:

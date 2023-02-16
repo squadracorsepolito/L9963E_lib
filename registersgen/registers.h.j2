@@ -6,12 +6,13 @@
  * 
  * Authors
  * - Federico Carbone [federico.carbone.sc@gmail.com]
+ * - Filippo Rossi [filippo.rossi.sc@gmail.com]
  */
 
 #include <inttypes.h>
 
 typedef enum {
-    {% for reg in registers %}{% set template = "%-"+max_reg_strlen|string+"s = %s" %}{{ template|format(reg.name, reg.address) }}{% if not loop.last %},
+    {% for reg in registers %}{% set template = "%-"+(max_reg_strlen+12)|string+"s = %s" %}{{ template|format("L9963E_"+reg.name+"_ADDR", reg.address) }}{% if not loop.last %},
     {% endif %}{% endfor %}
 } L9963E_RegistersAddrTypeDef;
 
@@ -27,3 +28,6 @@ typedef union {
     {% for reg in registers %}L9963E_{{ reg.name }}TypeDef {{ "%30s"|format(reg.name) }};
     {% endfor %}
 } L9963E_RegisterUnionTypeDef;
+
+{% for reg in registers %}
+#define L9963E_{{ reg.name.upper() }}_DEFAULT (((L9963E_RegisterUnionTypeDef)((L9963E_{{ reg.name }}TypeDef){ {% for field in reg.fields %}.{{ field.name }} = {{ field.default }}{% if not loop.last %}, {% endif %}{% endfor %} })).generic){% endfor %}

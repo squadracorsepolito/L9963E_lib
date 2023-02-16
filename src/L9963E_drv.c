@@ -6,6 +6,7 @@
  * 
  * Authors
  * - Federico Carbone [federico.carbone.sc@gmail.com]
+ * - Filippo Rossi [filippo.rossi.sc@gmail.com]
  */
 
 #include "L9963E_drv.h"
