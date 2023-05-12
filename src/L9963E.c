@@ -331,3 +331,59 @@ L9963E_StatusTypeDef L9963E_read_cell_voltage(L9963E_HandleTypeDef *handle, uint
 
     return L9963E_OK;
 }
+
+L9963E_StatusTypeDef L9963E_read_gpio_voltage(L9963E_HandleTypeDef *handle, uint8_t device, L9963E_GpiosTypeDef gpio, uint16_t *vgpio, uint8_t *data_ready) {
+    L9963E_StatusTypeDef errorcode = L9963E_OK;
+    L9963E_RegisterUnionTypeDef vgpio_meas_reg = {0};
+    L9963E_RegistersAddrTypeDef addr;
+
+#if L9963E_DEBUG
+    if (handle == NULL) {
+        return L9963E_ERROR;
+    }
+#endif
+
+    switch (gpio)
+    {
+    case L9963E_GPIO3:
+        addr = L9963E_GPIO3_MEAS_ADDR;
+        break;
+    case L9963E_GPIO4:
+        addr = L9963E_GPIO4_MEAS_ADDR;
+        break;
+    case L9963E_GPIO5:
+        addr = L9963E_GPIO5_MEAS_ADDR;
+        break;
+    case L9963E_GPIO6:
+        addr = L9963E_GPIO6_MEAS_ADDR;
+        break;
+    case L9963E_GPIO7:
+        addr = L9963E_GPIO7_MEAS_ADDR;
+        break;
+    case L9963E_GPIO8:
+        addr = L9963E_GPIO8_MEAS_ADDR;
+        break;
+    case L9963E_GPIO9:
+        addr = L9963E_GPIO9_MEAS_ADDR;
+        break;
+    default:
+        addr = L9963E_GPIO3_MEAS_ADDR;
+        break;
+    }
+
+    if(device == L9963E_DEVICE_BROADCAST) {
+        *vgpio = 0;
+        *data_ready = 0;
+        return L9963E_ERROR;
+    }
+
+    errorcode = L9963E_DRV_reg_read(&(handle->drv_handle), device, addr, &vgpio_meas_reg, 10);
+
+    if(errorcode != L9963E_OK)
+        return errorcode;
+    
+    *vgpio = vgpio_meas_reg.GPIO3_MEAS.GPIO3_MEAS;
+    *data_ready = vgpio_meas_reg.GPIO3_MEAS.d_rdy_gpio3;
+
+    return L9963E_OK;
+}

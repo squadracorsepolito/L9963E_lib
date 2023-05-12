@@ -44,6 +44,17 @@ enum L9963E_CellsEnum {
 };
 typedef enum L9963E_CellsEnum L9963E_CellsTypeDef;
 
+enum L9963E_GpiosEnum {
+    L9963E_GPIO3 = 1,
+    L9963E_GPIO4 = 2,
+    L9963E_GPIO5 = 4,
+    L9963E_GPIO6 = 8,
+    L9963E_GPIO7 = 16,
+    L9963E_GPIO8 = 32,
+    L9963E_GPIO9 = 64,
+};
+typedef enum L9963E_GpiosEnum L9963E_GpiosTypeDef;
+
 enum L9963E_StartConvertionOptEnum {
     L9963E_GPIO_CONV = 1,
     L9963E_BAL_TERM_CONV = 2,
@@ -72,5 +83,6 @@ L9963E_StatusTypeDef L9963E_set_enabled_cells(L9963E_HandleTypeDef *handle, uint
 L9963E_StatusTypeDef L9963E_start_conversion(L9963E_HandleTypeDef *handle, uint8_t device, uint8_t options);
 L9963E_StatusTypeDef L9963E_poll_conversion(L9963E_HandleTypeDef *handle, uint8_t device, uint8_t *conversion_done);
 L9963E_StatusTypeDef L9963E_read_cell_voltage(L9963E_HandleTypeDef *handle, uint8_t device, L9963E_CellsTypeDef cell, uint16_t *vcell, uint8_t *data_ready);
+L9963E_StatusTypeDef L9963E_read_gpio_voltage(L9963E_HandleTypeDef *handle, uint8_t device, L9963E_GpiosTypeDef gpio, uint16_t *vgpio, uint8_t *data_ready);
 
 #endif  // L9963E_H
