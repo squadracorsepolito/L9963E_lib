@@ -1305,3 +1305,4 @@ typedef union {
          .generic)
 #define L9963E_NVM_UNLCK_PRG_DEFAULT \
     (((L9963E_RegisterUnionTypeDef)((L9963E_NVM_UNLCK_PRGTypeDef){.NVM_UNLOCK_START = 0x0})).generic)
+    

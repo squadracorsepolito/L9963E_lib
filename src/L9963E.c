@@ -132,7 +132,7 @@ L9963E_StatusTypeDef L9963E_setCommTimeout(L9963E_HandleTypeDef *handle,
     }
 #endif
 
-    if (preserve_reg_value) {
+    if (preserve_reg_value && device != L9963E_DEVICE_BROADCAST) {
         errorcode = L9963E_DRV_reg_read(&(handle->drv_handle), device, L9963E_fastch_baluv_ADDR, &fastch_baluv_reg, 10);
 
         if (errorcode != L9963E_OK) {
@@ -145,5 +145,189 @@ L9963E_StatusTypeDef L9963E_setCommTimeout(L9963E_HandleTypeDef *handle,
     fastch_baluv_reg.fastch_baluv.CommTimeout = commTimeout;
 
     return L9963E_DRV_reg_write(
-        &(handle->drv_handle), L9963E_DEVICE_BROADCAST, L9963E_fastch_baluv_ADDR, &fastch_baluv_reg, 10);
+        &(handle->drv_handle), device, L9963E_fastch_baluv_ADDR, &fastch_baluv_reg, 10);
+}
+
+L9963E_StatusTypeDef L9963E_set_enabled_cells(L9963E_HandleTypeDef *handle, uint8_t device, uint16_t cells) {
+    L9963E_RegisterUnionTypeDef vcells_en_reg = {0};
+
+#if L9963E_DEBUG
+    if (handle == NULL) {
+        return L9963E_ERROR;
+    }
+#endif
+
+    for(uint8_t i=0; i<14; ++i) {
+        if(cells & (1<<i)) {
+            switch (i+1)
+            {
+            case 1:
+                vcells_en_reg.VCELLS_EN.VCELL1_EN = 1;
+                break;
+            case 2:
+                vcells_en_reg.VCELLS_EN.VCELL2_EN = 1;
+                break;
+            case 3:
+                vcells_en_reg.VCELLS_EN.VCELL3_EN = 1;
+                break;
+            case 4:
+                vcells_en_reg.VCELLS_EN.VCELL4_EN = 1;
+                break;
+            case 5:
+                vcells_en_reg.VCELLS_EN.VCELL5_EN = 1;
+                break;
+            case 6:
+                vcells_en_reg.VCELLS_EN.VCELL6_EN = 1;
+                break;
+            case 7:
+                vcells_en_reg.VCELLS_EN.VCELL7_EN = 1;
+                break;
+            case 8:
+                vcells_en_reg.VCELLS_EN.VCELL8_EN = 1;
+                break;
+            case 9:
+                vcells_en_reg.VCELLS_EN.VCELL9_EN = 1;
+                break;
+            case 10:
+                vcells_en_reg.VCELLS_EN.VCELL10_EN = 1;
+                break;
+            case 11:
+                vcells_en_reg.VCELLS_EN.VCELL11_EN = 1;
+                break;
+            case 12:
+                vcells_en_reg.VCELLS_EN.VCELL12_EN = 1;
+                break;
+            case 13:
+                vcells_en_reg.VCELLS_EN.VCELL13_EN = 1;
+                break;
+            case 14:
+                vcells_en_reg.VCELLS_EN.VCELL14_EN = 1;
+                break;
+            default:
+                break;
+            }
+        }
+    }
+
+    return L9963E_DRV_reg_write(
+        &(handle->drv_handle), device, L9963E_VCELLS_EN_ADDR, &vcells_en_reg, 10);
+}
+
+L9963E_StatusTypeDef L9963E_start_conversion(L9963E_HandleTypeDef *handle, uint8_t device, uint8_t options) {
+    L9963E_RegisterUnionTypeDef adcv_conv_reg = {0};
+
+#if L9963E_DEBUG
+    if (handle == NULL) {
+        return L9963E_ERROR;
+    }
+#endif
+
+    adcv_conv_reg.ADCV_CONV.SOC = 1;
+    adcv_conv_reg.ADCV_CONV.GPIO_CONV = (options & L9963E_GPIO_CONV) != 0;
+    adcv_conv_reg.ADCV_CONV.GPIO_TERM_CONV = (options & L9963E_GPIO_TERM_CONV) != 0;
+    adcv_conv_reg.ADCV_CONV.BAL_TERM_CONV = (options & L9963E_BAL_TERM_CONV) != 0;
+    adcv_conv_reg.ADCV_CONV.CELL_TERM_CONV = (options & L9963E_CELL_TERM_CONV) != 0;
+
+    return L9963E_DRV_reg_write(&(handle->drv_handle), device, L9963E_ADCV_CONV_ADDR, &adcv_conv_reg, 10);
+}
+
+L9963E_StatusTypeDef L9963E_poll_conversion(L9963E_HandleTypeDef *handle, uint8_t device, uint8_t *conversion_done) {
+    L9963E_StatusTypeDef errorcode = L9963E_OK;
+    L9963E_RegisterUnionTypeDef adcv_conv_reg = {0};
+
+#if L9963E_DEBUG
+    if (handle == NULL) {
+        return L9963E_ERROR;
+    }
+#endif
+
+    if(device == L9963E_DEVICE_BROADCAST) {
+        *conversion_done = 0;
+        return L9963E_ERROR;
+    }
+
+    errorcode = L9963E_DRV_reg_read(&(handle->drv_handle), device, L9963E_ADCV_CONV_ADDR, &adcv_conv_reg, 10);
+
+    if(errorcode != L9963E_OK)
+        return errorcode;
+
+    *conversion_done = !adcv_conv_reg.ADCV_CONV.DUTY_ON;
+    return L9963E_OK;
+}
+
+L9963E_StatusTypeDef L9963E_read_cell_voltage(L9963E_HandleTypeDef *handle, uint8_t device, L9963E_CellsTypeDef cell, uint16_t *vcell, uint8_t *data_ready) {
+    L9963E_StatusTypeDef errorcode = L9963E_OK;
+    L9963E_RegisterUnionTypeDef vcell_meas_reg = {0};
+    L9963E_RegistersAddrTypeDef addr;
+
+#if L9963E_DEBUG
+    if (handle == NULL) {
+        return L9963E_ERROR;
+    }
+#endif
+
+    if(device == L9963E_DEVICE_BROADCAST) {
+        *vcell = 0;
+        *data_ready = 0;
+        return L9963E_ERROR;
+    }
+
+    switch (cell)
+    {
+    case L9963E_CELL1:
+        addr = L9963E_Vcell1_ADDR;
+        break;
+    case L9963E_CELL2:
+        addr = L9963E_Vcell2_ADDR;
+        break;
+    case L9963E_CELL3:
+        addr = L9963E_Vcell3_ADDR;
+        break;
+    case L9963E_CELL4:
+        addr = L9963E_Vcell4_ADDR;
+        break;
+    case L9963E_CELL5:
+        addr = L9963E_Vcell5_ADDR;
+        break;
+    case L9963E_CELL6:
+        addr = L9963E_Vcell6_ADDR;
+        break;
+    case L9963E_CELL7:
+        addr = L9963E_Vcell7_ADDR;
+        break;
+    case L9963E_CELL8:
+        addr = L9963E_Vcell8_ADDR;
+        break;
+    case L9963E_CELL9:
+        addr = L9963E_Vcell9_ADDR;
+        break;
+    case L9963E_CELL10:
+        addr = L9963E_Vcell10_ADDR;
+        break;
+    case L9963E_CELL11:
+        addr = L9963E_Vcell11_ADDR;
+        break;
+    case L9963E_CELL12:
+        addr = L9963E_Vcell12_ADDR;
+        break;
+    case L9963E_CELL13:
+        addr = L9963E_Vcell13_ADDR;
+        break;
+    case L9963E_CELL14:
+        addr = L9963E_Vcell14_ADDR;
+        break;
+    default:
+        addr = L9963E_Vcell1_ADDR;
+        break;
+    }
+
+    errorcode = L9963E_DRV_reg_read(&(handle->drv_handle), device, addr, &vcell_meas_reg, 10);
+
+    if(errorcode != L9963E_OK)
+        return errorcode;
+    
+    *vcell = vcell_meas_reg.Vcell1.VCell1;
+    *data_ready = vcell_meas_reg.Vcell1.d_rdy_Vcell1;
+
+    return L9963E_OK;
 }
