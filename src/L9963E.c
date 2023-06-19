@@ -104,21 +104,6 @@ L9963E_StatusTypeDef L9963E_addressing_procedure(L9963E_HandleTypeDef *handle,
     return L9963E_OK;
 }
 
-L9963E_StatusTypeDef L9963E_setCommTimeout_Broadcast(L9963E_HandleTypeDef *handle,
-                                                     L9963E_CommTimeoutTypeDef commTimeout) {
-    L9963E_RegisterUnionTypeDef fastch_baluv_reg = {.generic = L9963E_FASTCH_BALUV_DEFAULT};
-    fastch_baluv_reg.fastch_baluv.CommTimeout    = commTimeout;
-
-#if L9963E_DEBUG
-    if (handle == NULL) {
-        return L9963E_ERROR;
-    }
-#endif
-
-    return L9963E_DRV_reg_write(
-        &(handle->drv_handle), L9963E_DEVICE_BROADCAST, L9963E_fastch_baluv_ADDR, &fastch_baluv_reg, 10);
-}
-
 L9963E_StatusTypeDef L9963E_setCommTimeout(L9963E_HandleTypeDef *handle,
                                            L9963E_CommTimeoutTypeDef commTimeout,
                                            uint8_t device,
@@ -386,4 +371,29 @@ L9963E_StatusTypeDef L9963E_read_gpio_voltage(L9963E_HandleTypeDef *handle, uint
     *data_ready = vgpio_meas_reg.GPIO3_MEAS.d_rdy_gpio3;
 
     return L9963E_OK;
+}
+
+L9963E_StatusTypeDef L9963E_enable_vref(L9963E_HandleTypeDef *handle, uint8_t device, uint8_t preserve_reg_value) {
+    L9963E_StatusTypeDef errorcode = L9963E_OK;
+    L9963E_RegisterUnionTypeDef ncycle_prog2_reg;
+
+#if L9963E_DEBUG
+    if (handle == NULL) {
+        return L9963E_ERROR;
+    }
+#endif
+
+    if (preserve_reg_value && device != L9963E_DEVICE_BROADCAST) {
+        errorcode = L9963E_DRV_reg_read(&(handle->drv_handle), device, L9963E_fastch_baluv_ADDR, &ncycle_prog2_reg, 10);
+
+        if (errorcode != L9963E_OK) {
+            return errorcode;
+        }
+    } else {
+        ncycle_prog2_reg.generic = L9963E_FASTCH_BALUV_DEFAULT;
+    }
+
+    ncycle_prog2_reg.generic = L9963E_NCYCLE_PROG_2_DEFAULT;
+    ncycle_prog2_reg.NCYCLE_PROG_2.VTREF_EN = 1;
+    return L9963E_DRV_reg_write(&(handle->drv_handle), device, L9963E_NCYCLE_PROG_2_ADDR, &ncycle_prog2_reg, 10);
 }
