@@ -236,7 +236,7 @@ L9963E_StatusTypeDef L9963E_poll_conversion(L9963E_HandleTypeDef *handle, uint8_
     if(errorcode != L9963E_OK)
         return errorcode;
 
-    *conversion_done = !adcv_conv_reg.ADCV_CONV.DUTY_ON;
+    *conversion_done = !adcv_conv_reg.ADCV_CONV.SOC;
     return L9963E_OK;
 }
 
@@ -313,6 +313,32 @@ L9963E_StatusTypeDef L9963E_read_cell_voltage(L9963E_HandleTypeDef *handle, uint
     
     *vcell = vcell_meas_reg.Vcell1.VCell1;
     *data_ready = vcell_meas_reg.Vcell1.d_rdy_Vcell1;
+
+    return L9963E_OK;
+}
+
+
+L9963E_StatusTypeDef L9963E_read_batt_voltage(L9963E_HandleTypeDef *handle, uint8_t device, uint16_t *vbatt) {
+    L9963E_StatusTypeDef errorcode = L9963E_OK;
+    L9963E_RegisterUnionTypeDef vbattdiv_reg = {0};
+
+#if L9963E_DEBUG
+    if (handle == NULL) {
+        return L9963E_ERROR;
+    }
+#endif
+
+    if(device == L9963E_DEVICE_BROADCAST) {
+        *vbatt = 0;
+        return L9963E_ERROR;
+    }
+
+    errorcode = L9963E_DRV_reg_read(&(handle->drv_handle), device, L9963E_VBATTDIV_ADDR, &vbattdiv_reg, 10);
+
+    if(errorcode != L9963E_OK)
+        return errorcode;
+    
+    *vbatt = vbattdiv_reg.VBATTDIV.VBATT_DIV;
 
     return L9963E_OK;
 }

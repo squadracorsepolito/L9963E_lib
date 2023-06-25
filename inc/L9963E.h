@@ -82,6 +82,7 @@ L9963E_StatusTypeDef L9963E_enable_vref(L9963E_HandleTypeDef *handle, uint8_t de
 L9963E_StatusTypeDef L9963E_start_conversion(L9963E_HandleTypeDef *handle, uint8_t device, uint8_t options);
 L9963E_StatusTypeDef L9963E_poll_conversion(L9963E_HandleTypeDef *handle, uint8_t device, uint8_t *conversion_done);
 L9963E_StatusTypeDef L9963E_read_cell_voltage(L9963E_HandleTypeDef *handle, uint8_t device, L9963E_CellsTypeDef cell, uint16_t *vcell, uint8_t *data_ready);
+L9963E_StatusTypeDef L9963E_read_batt_voltage(L9963E_HandleTypeDef *handle, uint8_t device, uint16_t *vbatt);
 L9963E_StatusTypeDef L9963E_read_gpio_voltage(L9963E_HandleTypeDef *handle, uint8_t device, L9963E_GpiosTypeDef gpio, uint16_t *vgpio, uint8_t *data_ready);
 
 #endif  // L9963E_H
