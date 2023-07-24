@@ -198,7 +198,7 @@ L9963E_StatusTypeDef L9963E_set_enabled_cells(L9963E_HandleTypeDef *handle, uint
         &(handle->drv_handle), device, L9963E_VCELLS_EN_ADDR, &vcells_en_reg, 10);
 }
 
-L9963E_StatusTypeDef L9963E_start_conversion(L9963E_HandleTypeDef *handle, uint8_t device, uint8_t options) {
+L9963E_StatusTypeDef L9963E_start_conversion(L9963E_HandleTypeDef *handle, uint8_t device, uint8_t adc_filter_soc, uint8_t options) {
     L9963E_RegisterUnionTypeDef adcv_conv_reg = {0};
 
 #if L9963E_DEBUG
@@ -206,6 +206,8 @@ L9963E_StatusTypeDef L9963E_start_conversion(L9963E_HandleTypeDef *handle, uint8
         return L9963E_ERROR;
     }
 #endif
+
+    adcv_conv_reg.ADCV_CONV.ADC_FILTER_SOC = adc_filter_soc;
 
     adcv_conv_reg.ADCV_CONV.SOC = 1;
     adcv_conv_reg.ADCV_CONV.GPIO_CONV = (options & L9963E_GPIO_CONV) != 0;
@@ -318,9 +320,10 @@ L9963E_StatusTypeDef L9963E_read_cell_voltage(L9963E_HandleTypeDef *handle, uint
 }
 
 
-L9963E_StatusTypeDef L9963E_read_batt_voltage(L9963E_HandleTypeDef *handle, uint8_t device, uint16_t *vbatt) {
+L9963E_StatusTypeDef L9963E_read_batt_voltage(L9963E_HandleTypeDef *handle, uint8_t device, uint16_t *vbatt_monitor, uint32_t *vbatt_sum) {
     L9963E_StatusTypeDef errorcode = L9963E_OK;
     L9963E_RegisterUnionTypeDef vbattdiv_reg = {0};
+    L9963E_RegisterUnionTypeDef vsumbatt_reg = {0};
 
 #if L9963E_DEBUG
     if (handle == NULL) {
@@ -329,7 +332,8 @@ L9963E_StatusTypeDef L9963E_read_batt_voltage(L9963E_HandleTypeDef *handle, uint
 #endif
 
     if(device == L9963E_DEVICE_BROADCAST) {
-        *vbatt = 0;
+        *vbatt_monitor = 0;
+        *vbatt_sum = 0;
         return L9963E_ERROR;
     }
 
@@ -338,7 +342,14 @@ L9963E_StatusTypeDef L9963E_read_batt_voltage(L9963E_HandleTypeDef *handle, uint
     if(errorcode != L9963E_OK)
         return errorcode;
     
-    *vbatt = vbattdiv_reg.VBATTDIV.VBATT_DIV;
+    errorcode = L9963E_DRV_reg_read(&(handle->drv_handle), device, L9963E_VSUMBATT_ADDR, &vsumbatt_reg, 10);
+    
+    *vbatt_monitor = vbattdiv_reg.VBATTDIV.VBATT_DIV;
+
+    if(errorcode != L9963E_OK)
+        return errorcode;
+
+    *vbatt_sum = (vsumbatt_reg.VSUMBATT.vsum_batt19_2<<2) | vbattdiv_reg.VBATTDIV.vsum_batt1_0;
 
     return L9963E_OK;
 }
