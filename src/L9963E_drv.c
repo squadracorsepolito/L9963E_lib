@@ -99,7 +99,8 @@ L9963E_StatusTypeDef L9963E_DRV_init(L9963E_DRV_HandleTypeDef *handle, L9963E_If
 }
 
 L9963E_StatusTypeDef L9963E_DRV_wakeup(L9963E_DRV_HandleTypeDef *handle) {
-    static const uint8_t dummy[5]  = {0x55, 0x55, 0x55, 0x55, 0x55};
+    uint8_t dummy[5]               = {0x55, 0x55, 0x55, 0x55, 0x55};
+    L9963E_IF_PinState isofreq     = L9963E_IF_GPIO_PIN_RESET;
     L9963E_StatusTypeDef errorcode = L9963E_OK;
 
 #if L9963E_DEBUG
@@ -108,9 +109,15 @@ L9963E_StatusTypeDef L9963E_DRV_wakeup(L9963E_DRV_HandleTypeDef *handle) {
     }
 #endif
 
+    isofreq = L9963E_DRV_ISOFREQ_READ(handle);
+
+    L9963E_DRV_ISOFREQ_LOW(handle);
+
     L9963E_DRV_CS_LOW(handle);
-    errorcode = L9963E_DRV_SPI_RECEIVE(handle, (uint8_t *)dummy, sizeof(dummy), 10);
+    errorcode = L9963E_DRV_SPI_TRANSMIT(handle, (uint8_t *)dummy, sizeof(dummy), 10);
     L9963E_DRV_CS_HIGH(handle);
+
+    L9963E_DRV_WRITE_PIN(handle, L9963E_IF_ISOFREQ, isofreq);
 
     return errorcode;
 }
