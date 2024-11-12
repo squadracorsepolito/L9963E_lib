@@ -27,15 +27,15 @@ struct L9963E_HandleStruct {
 typedef struct L9963E_HandleStruct L9963E_HandleTypeDef;
 
 enum L9963E_CellsEnum {
-    L9963E_CELL1 = 1,
-    L9963E_CELL2 = 2,
-    L9963E_CELL3 = 4,
-    L9963E_CELL4 = 8,
-    L9963E_CELL5 = 16,
-    L9963E_CELL6 = 32,
-    L9963E_CELL7 = 64,
-    L9963E_CELL8 = 128,
-    L9963E_CELL9 = 256,
+    L9963E_CELL1  = 1,
+    L9963E_CELL2  = 2,
+    L9963E_CELL3  = 4,
+    L9963E_CELL4  = 8,
+    L9963E_CELL5  = 16,
+    L9963E_CELL6  = 32,
+    L9963E_CELL7  = 64,
+    L9963E_CELL8  = 128,
+    L9963E_CELL9  = 256,
     L9963E_CELL10 = 512,
     L9963E_CELL11 = 1024,
     L9963E_CELL12 = 2048,
@@ -56,8 +56,8 @@ enum L9963E_GpiosEnum {
 typedef enum L9963E_GpiosEnum L9963E_GpiosTypeDef;
 
 enum L9963E_StartConvertionOptEnum {
-    L9963E_GPIO_CONV = 1,
-    L9963E_BAL_TERM_CONV = 2,
+    L9963E_GPIO_CONV      = 1,
+    L9963E_BAL_TERM_CONV  = 2,
     L9963E_CELL_TERM_CONV = 4,
     L9963E_GPIO_TERM_CONV = 8,
 };
@@ -79,10 +79,24 @@ L9963E_StatusTypeDef L9963E_setCommTimeout(L9963E_HandleTypeDef *handle,
 
 L9963E_StatusTypeDef L9963E_set_enabled_cells(L9963E_HandleTypeDef *handle, uint8_t device, uint16_t cells);
 L9963E_StatusTypeDef L9963E_enable_vref(L9963E_HandleTypeDef *handle, uint8_t device, uint8_t preserve_reg_value);
-L9963E_StatusTypeDef L9963E_start_conversion(L9963E_HandleTypeDef *handle, uint8_t device, uint8_t adc_filter_soc, uint8_t options);
+L9963E_StatusTypeDef L9963E_start_conversion(L9963E_HandleTypeDef *handle,
+                                             uint8_t device,
+                                             uint8_t adc_filter_soc,
+                                             uint8_t options);
 L9963E_StatusTypeDef L9963E_poll_conversion(L9963E_HandleTypeDef *handle, uint8_t device, uint8_t *conversion_done);
-L9963E_StatusTypeDef L9963E_read_cell_voltage(L9963E_HandleTypeDef *handle, uint8_t device, L9963E_CellsTypeDef cell, uint16_t *vcell, uint8_t *data_ready);
-L9963E_StatusTypeDef L9963E_read_batt_voltage(L9963E_HandleTypeDef *handle, uint8_t device, uint16_t *vbatt_monitor, uint32_t *vbatt_sum);
-L9963E_StatusTypeDef L9963E_read_gpio_voltage(L9963E_HandleTypeDef *handle, uint8_t device, L9963E_GpiosTypeDef gpio, uint16_t *vgpio, uint8_t *data_ready);
+L9963E_StatusTypeDef L9963E_read_cell_voltage(L9963E_HandleTypeDef *handle,
+                                              uint8_t device,
+                                              L9963E_CellsTypeDef cell,
+                                              uint16_t *vcell,
+                                              uint8_t *data_ready);
+L9963E_StatusTypeDef L9963E_read_batt_voltage(L9963E_HandleTypeDef *handle,
+                                              uint8_t device,
+                                              uint16_t *vbatt_monitor,
+                                              uint32_t *vbatt_sum);
+L9963E_StatusTypeDef L9963E_read_gpio_voltage(L9963E_HandleTypeDef *handle,
+                                              uint8_t device,
+                                              L9963E_GpiosTypeDef gpio,
+                                              uint16_t *vgpio,
+                                              uint8_t *data_ready);
 
 #endif  // L9963E_H
