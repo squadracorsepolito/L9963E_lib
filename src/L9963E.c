@@ -51,7 +51,7 @@ L9963E_StatusTypeDef L9963E_addressing_procedure(L9963E_HandleTypeDef *handle,
         read_reg.generic  = 0;
 
         //readback, if successful continue, else repeat the same cycle
-        if (L9963E_DRV_reg_read(&(handle->drv_handle), x, L9963E_DEV_GEN_CFG_ADDR, &read_reg, 1) == L9963E_OK &&
+        if (L9963E_DRV_reg_read(&(handle->drv_handle), x, L9963E_DEV_GEN_CFG_ADDR, &read_reg, 10) == L9963E_OK &&
             read_reg.DEV_GEN_CFG.chip_ID == x) {
             ++x;
             tick = L9963E_DRV_GETTICK(&(handle->drv_handle));
@@ -72,7 +72,7 @@ L9963E_StatusTypeDef L9963E_addressing_procedure(L9963E_HandleTypeDef *handle,
             write_reg.DEV_GEN_CFG.isotx_en_h   = 0b1;
 
             L9963E_DRV_reg_write(
-                &(handle->drv_handle), L9963E_DEVICE_BROADCAST, L9963E_DEV_GEN_CFG_ADDR, &write_reg, 1);
+                &(handle->drv_handle), L9963E_DEVICE_BROADCAST, L9963E_DEV_GEN_CFG_ADDR, &write_reg, 10);
         }
     }
 
@@ -86,20 +86,20 @@ L9963E_StatusTypeDef L9963E_addressing_procedure(L9963E_HandleTypeDef *handle,
     else
         L9963E_DRV_ISOFREQ_LOW(&(handle->drv_handle));
 
-    L9963E_DRV_reg_write(&(handle->drv_handle), L9963E_DEVICE_BROADCAST, L9963E_DEV_GEN_CFG_ADDR, &write_reg, 1);
+    L9963E_DRV_reg_write(&(handle->drv_handle), L9963E_DEVICE_BROADCAST, L9963E_DEV_GEN_CFG_ADDR, &write_reg, 10);
 
     write_reg.DEV_GEN_CFG.Farthest_Unit = 0b1;
     if (!handle->is_dual_ring) {
         write_reg.DEV_GEN_CFG.isotx_en_h = 0;
     }
 
-    L9963E_DRV_reg_write(&(handle->drv_handle), handle->slave_n, L9963E_DEV_GEN_CFG_ADDR, &write_reg, 1);
+    L9963E_DRV_reg_write(&(handle->drv_handle), handle->slave_n, L9963E_DEV_GEN_CFG_ADDR, &write_reg, 10);
 
     if (lock_isofreq == 1) {
         write_reg.generic                 = L9963E_BAL_3_DEFAULT;
         write_reg.Bal_3.Lock_isoh_isofreq = 1;
 
-        L9963E_DRV_reg_write(&(handle->drv_handle), L9963E_DEVICE_BROADCAST, L9963E_Bal_3_ADDR, &write_reg, 1);
+        L9963E_DRV_reg_write(&(handle->drv_handle), L9963E_DEVICE_BROADCAST, L9963E_Bal_3_ADDR, &write_reg, 10);
     }
 
     return L9963E_OK;
