@@ -9,6 +9,8 @@
  * - Filippo Rossi [filippo.rossi.sc@gmail.com]
  */
 
+ // clang-format off
+
 #include <inttypes.h>
 
 typedef enum {
@@ -18,8 +20,11 @@ typedef enum {
 
 {% for reg in registers %}
 typedef struct {
-    uint32_t    {% for field in reg.fields %}{% set template = "%-"+reg.max_field_strlen|string+"s :%s" %}{{ template|format(field.name, field.width) }},
-                {% endfor %}:14;
+    uint32_t    {% for field in reg.fields %}{% if field.descr != "" %}{{ field.descr }}
+                {% else %}
+                {% endif %}{% set template = "%-"+reg.max_field_strlen|string+"s :%s" %}{{ template|format(field.name, field.width) }},{% endfor %}
+/* Padding */
+                :14;
 } L9963E_{{ reg.name }}TypeDef;
 {% endfor %}
 
@@ -31,3 +36,5 @@ typedef union {
 
 {% for reg in registers %}
 #define L9963E_{{ reg.name.upper() }}_DEFAULT (((L9963E_RegisterUnionTypeDef)((L9963E_{{ reg.name }}TypeDef){ {% for field in reg.fields %}.{{ field.name }} = {{ field.default }}{% if not loop.last %}, {% endif %}{% endfor %} })).generic){% endfor %}
+
+ // clang-format on
