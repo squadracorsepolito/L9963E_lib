@@ -105,6 +105,57 @@ L9963E_StatusTypeDef L9963E_addressing_procedure(L9963E_HandleTypeDef *handle,
     return L9963E_OK;
 }
 
+L9963E_StatusTypeDef L9963E_sw_rst(L9963E_HandleTypeDef *handle, uint8_t device, uint8_t go2slp) {
+    L9963E_RegisterUnionTypeDef FSM_reg;
+
+#if L9963E_DEBUG
+    if (handle == NULL) {
+        return L9963E_ERROR;
+    }
+#endif
+
+    FSM_reg.generic    = L9963E_FSM_DEFAULT;
+    FSM_reg.FSM.SW_RST = 0b10;
+    FSM_reg.FSM.GO2SLP = go2slp ? 0b10 : 0b00;
+
+    return L9963E_DRV_reg_write(&(handle->drv_handle), device, L9963E_FSM_ADDR, &FSM_reg, 10);
+}
+
+L9963E_StatusTypeDef L9963E_trimming_retrigger(L9963E_HandleTypeDef *handle,
+                                               uint8_t device,
+                                               uint8_t preserve_reg_value) {
+    L9963E_StatusTypeDef errorcode = L9963E_OK;
+    L9963E_RegisterUnionTypeDef Bal3_reg;
+
+#if L9963E_DEBUG
+    if (handle == NULL) {
+        return L9963E_ERROR;
+    }
+#endif
+
+    if (preserve_reg_value && device != L9963E_DEVICE_BROADCAST) {
+        errorcode = L9963E_DRV_reg_read(&(handle->drv_handle), device, L9963E_fastch_baluv_ADDR, &Bal3_reg, 10);
+
+        if (errorcode != L9963E_OK) {
+            return errorcode;
+        }
+    } else {
+        Bal3_reg.generic = L9963E_BAL_3_DEFAULT;
+    }
+
+    Bal3_reg.Bal_3.trimming_retrigger = 1;
+
+    errorcode = L9963E_DRV_reg_write(&(handle->drv_handle), device, L9963E_Bal_3_ADDR, &Bal3_reg, 10);
+    if (errorcode != L9963E_OK) {
+        return errorcode;
+    }
+
+    L9963E_DRV_DELAY(&(handle->drv_handle), 10);
+
+    Bal3_reg.Bal_3.trimming_retrigger = 0;
+    return L9963E_DRV_reg_write(&(handle->drv_handle), device, L9963E_Bal_3_ADDR, &Bal3_reg, 10);
+}
+
 L9963E_StatusTypeDef L9963E_setCommTimeout(L9963E_HandleTypeDef *handle,
                                            L9963E_CommTimeoutTypeDef commTimeout,
                                            uint8_t device,

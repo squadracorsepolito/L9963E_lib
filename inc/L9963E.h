@@ -90,6 +90,27 @@ L9963E_StatusTypeDef L9963E_addressing_procedure(L9963E_HandleTypeDef *handle,
                                                  uint8_t out_res_tx_iso,
                                                  uint8_t lock_isofreq);
 /**
+ * @brief Performs a SW reset.
+ * 
+ * @param handle Pointer to the L9963E handle structure.
+ * @param device Target device address.
+ * @param go2slp GO2SLP sent in the same frame flag.
+ * @return L9963E status (L9963E_OK on success, L9963E_ERROR on failure).
+ */
+L9963E_StatusTypeDef L9963E_sw_rst(L9963E_HandleTypeDef *handle, uint8_t device, uint8_t go2slp);
+/**
+ * @brief Retrigger NVM .
+ * 
+ * @param handle Pointer to the L9963E handle structure.
+ * @param device Target device address.
+ * @param go2slp GO2SLP sent in the same frame flag.
+ * @param preserve_reg_value Flag to preserve register values.
+ * @return L9963E status (L9963E_OK on success, L9963E_ERROR on failure).
+ */
+L9963E_StatusTypeDef L9963E_trimming_retrigger(L9963E_HandleTypeDef *handle,
+                                               uint8_t device,
+                                               uint8_t preserve_reg_value);
+/**
  * @brief Sets the communication timeout for the L9963E device.
  * 
  * @param handle Pointer to the L9963E handle structure.
