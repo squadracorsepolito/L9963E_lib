@@ -160,8 +160,8 @@ L9963E_StatusTypeDef _L9963E_DRV_spi_transmit(L9963E_DRV_HandleTypeDef *handle,
     L9963E_DRV_TXEN_HIGH(handle);
     L9963E_DRV_CS_LOW(handle);
     errorcode = L9963E_DRV_SPI_TRANSMIT(handle, data, len, timeout);
-    L9963E_DRV_TXEN_LOW(handle);
     L9963E_DRV_CS_HIGH(handle);
+    L9963E_DRV_TXEN_LOW(handle);
 
     return errorcode;
 }
